@@ -14,6 +14,7 @@
       --morning: #f59e0b;
       --afternoon: #38bdf8;
       --night: #a855f7;
+      --danger: #ef4444;
       --border: #222f46;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -51,7 +52,7 @@
     .color-dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s; }
     .color-dot:active { transform: scale(0.9); }
 
-    /* ヒートマップ（横スクロールのみ許容） */
+    /* ヒートマップ */
     .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 10px; background: var(--card-bg); margin-top: 10px; }
     .matrix-table { border-collapse: collapse; font-size: 0.72rem; width: max-content; }
     .matrix-table th, .matrix-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--card-border); }
@@ -67,20 +68,23 @@
     .modal-content { background: var(--card-bg); border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
     .modal-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
     
-    /* 並び替え対応リスト */
-    .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; gap: 8px; }
+    /* 管理リスト */
+    .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; gap: 6px; }
     .manage-info { flex: 1; min-width: 0; }
     .manage-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .reorder-btns { display: flex; gap: 4px; }
-    .reorder-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; }
-    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
     
-    .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .reorder-btns { display: flex; gap: 4px; }
+    .reorder-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; }
+    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .delete-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; }
+    
+    .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); border-radius: 22px; transition: .2s; }
     .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .2s; }
     input:checked + .slider { background-color: var(--afternoon); }
-    input:checked + .slider:before { transform: translateX(18px); }
+    input:checked + .slider:before { transform: translateX(16px); }
 
     .input-box { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-size: 0.85rem; margin-top: 8px; }
     .btn { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.85rem; }
@@ -118,11 +122,11 @@
     </div>
   </div>
 
-  <!-- 設定 & 並び替えモーダル -->
+  <!-- 設定 & 並び替え・削除モーダル -->
   <div class="modal" id="manage-modal">
     <div class="modal-content">
-      <div class="modal-title">Habits Order & Active</div>
-      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Use ▲/▼ to reorder, toggle switches to show/hide.</p>
+      <div class="modal-title">Habits Management</div>
+      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Reorder (▲/▼), Toggle (Switch), or Delete (🗑️).</p>
       
       <div id="manage-list"></div>
 
@@ -140,6 +144,9 @@
   </div>
 
   <script>
+    const STORAGE_KEY_HABITS = 'habit_tracker_master_v1';
+    const STORAGE_KEY_LOGS = 'habit_tracker_logs_v1';
+
     const COLORS = [
       { name: 'Emerald', code: '#10b981' },
       { name: 'Blue',    code: '#3b82f6' },
@@ -173,17 +180,34 @@
       { id: 'n5', time: 'night', name: '睡眠のQQRT（量・質・規則性）', desc: '早起きより睡眠時間・規則性を優先', active: true }
     ];
 
-    let habits = JSON.parse(localStorage.getItem('habits_v3')) || DEFAULT_HABITS;
-    let logs = JSON.parse(localStorage.getItem('habit_logs_v3')) || {};
+    let habits = [];
+    let logs = {};
+
+    function loadData() {
+      try {
+        const storedHabits = localStorage.getItem(STORAGE_KEY_HABITS);
+        habits = storedHabits ? JSON.parse(storedHabits) : DEFAULT_HABITS;
+        const storedLogs = localStorage.getItem(STORAGE_KEY_LOGS);
+        logs = storedLogs ? JSON.parse(storedLogs) : {};
+      } catch (e) {
+        console.error("Storage load failed, using defaults", e);
+        habits = DEFAULT_HABITS;
+        logs = {};
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY_HABITS, JSON.stringify(habits));
+        localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs));
+      } catch (e) {
+        console.error("Storage save failed", e);
+      }
+    }
 
     function getTodayKey() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    }
-
-    function save() {
-      localStorage.setItem('habits_v3', JSON.stringify(habits));
-      localStorage.setItem('habit_logs_v3', JSON.stringify(logs));
     }
 
     function setHabitColor(habitId, color) {
@@ -196,7 +220,7 @@
         logs[today][habitId] = color;
       }
       
-      save();
+      saveData();
       renderToday();
     }
 
@@ -302,7 +326,6 @@
       if (tab === 'stats') renderHeatmap();
     }
 
-    /* 並び替え対応のモーダルレンダリング */
     function renderManageModal() {
       const container = document.getElementById('manage-list');
       container.innerHTML = '';
@@ -332,6 +355,7 @@
               <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
               <span class="slider"></span>
             </label>
+            <button class="delete-btn" onclick="deleteHabit('${h.id}')" title="Delete">🗑️</button>
           `;
           container.appendChild(div);
         });
@@ -343,7 +367,6 @@
       if (idx === -1) return;
       const current = habits[idx];
       
-      // 同じ時間帯のアイテム同士で位置を入れ替え
       let targetIdx = -1;
       if (direction === -1) {
         for (let i = idx - 1; i >= 0; i--) {
@@ -359,7 +382,7 @@
         const temp = habits[idx];
         habits[idx] = habits[targetIdx];
         habits[targetIdx] = temp;
-        save();
+        saveData();
         renderManageModal();
         renderToday();
       }
@@ -367,23 +390,39 @@
 
     function toggleActive(id) {
       const target = habits.find(h => h.id === id);
-      if (target) target.active = !target.active;
-      save();
-      renderToday();
+      if (target) {
+        target.active = !target.active;
+        saveData();
+        renderToday();
+      }
+    }
+
+    function deleteHabit(id) {
+      const target = habits.find(h => h.id === id);
+      if (!target) return;
+      
+      if (confirm(`「${target.name}」を削除しますか？\n（過去の塗りつぶし記録からも非表示になります）`)) {
+        habits = habits.filter(h => h.id !== id);
+        saveData();
+        renderManageModal();
+        renderToday();
+      }
     }
 
     function addNewHabit() {
       const time = document.getElementById('new-habit-time').value;
       const name = document.getElementById('new-habit-name').value.trim();
       const desc = document.getElementById('new-habit-desc').value.trim();
-      if (!name) return alert('Please enter a habit name.');
+      if (!name) return alert('習慣名を入力してください');
 
       habits.push({ id: 'custom_' + Date.now(), time, name, desc, active: true });
-      save();
+      saveData();
+      
       document.getElementById('new-habit-name').value = '';
       document.getElementById('new-habit-desc').value = '';
       renderManageModal();
       renderToday();
+      alert('習慣を追加し、保存しました！');
     }
 
     function openModal(id) {
@@ -398,6 +437,8 @@
       }
     });
 
+    // 起動時にデータ読み込み＆表示
+    loadData();
     renderToday();
   </script>
 </body>
