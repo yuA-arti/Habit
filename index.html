@@ -1,131 +1,157 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>自己管理室 トラッカー</title>
+  <title>HABIT TRACKER</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --card-border: #232f48;
       --text: #f8fafc;
-      --text-sub: #94a3b8;
-      --accent: #38bdf8;
-      --success: #10b981;
-      --border: #334155;
+      --text-sub: #8292ab;
+      --morning: #f59e0b;   /* Morning: Warm Amber */
+      --afternoon: #38bdf8; /* Afternoon: Sky Blue */
+      --night: #a855f7;     /* Night: Vivid Purple */
+      --border: #222f46;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 70px; -webkit-tap-highlight-color: transparent; }
     
-    header { padding: 16px 20px; background: var(--card-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-    h1 { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-    .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 1.2rem; cursor: pointer; }
+    header { padding: 18px 20px; background: rgba(21, 29, 48, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.1em; color: #fff; }
+    .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); }
-    .nav-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 0.85rem; color: var(--text-sub); font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; }
-    .nav-tab.active { color: var(--accent); border-color: var(--accent); }
+    .nav-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 0.85rem; color: var(--text-sub); font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .nav-tab.active { color: #fff; border-color: var(--afternoon); }
 
-    .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+    .container { padding: 16px; max-width: 800px; margin: 0 auto; }
     
-    .section-title { font-size: 0.8rem; text-transform: uppercase; color: var(--text-sub); letter-spacing: 0.05em; margin: 16px 0 8px; }
+    /* セクション別のカラー設定 */
+    .section-title { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.12em; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+    .title-morning { color: var(--morning); }
+    .title-afternoon { color: var(--afternoon); }
+    .title-night { color: var(--night); }
     
-    .habit-card { background: var(--card-bg); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+    .habit-card { background: var(--card-bg); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
     .habit-info { flex: 1; margin-right: 12px; }
     .habit-name { font-size: 0.95rem; font-weight: 600; }
-    .habit-desc { font-size: 0.75rem; color: var(--text-sub); margin-top: 2px; }
+    .habit-desc { font-size: 0.75rem; color: var(--text-sub); margin-top: 3px; }
     
-    /* 塗りつぶしボタン */
-    .check-btn { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: transparent; transition: all 0.2s; }
-    .check-btn.checked { background: var(--success); border-color: var(--success); color: #fff; transform: scale(1.05); }
+    /* 完了ボタン & カラーパレット */
+    .action-group { display: flex; align-items: center; gap: 8px; position: relative; }
+    .check-btn { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: transparent; transition: all 0.2s; }
+    .check-btn.checked { color: #fff; transform: scale(1.05); }
 
-    /* 設定 & 編集モーダル */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+    .color-picker { display: none; position: absolute; right: 52px; background: #1a243b; border: 1px solid var(--card-border); padding: 8px; border-radius: 12px; gap: 6px; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .color-picker.show { display: flex; }
+    .color-dot { width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.15s; }
+    .color-dot:hover { transform: scale(1.15); }
+
+    /* ヒートマップ（マトリクス表） */
+    .matrix-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg); margin-top: 10px; }
+    .matrix-table { border-collapse: collapse; min-width: 100%; font-size: 0.75rem; }
+    .matrix-table th, .matrix-table td { padding: 8px; text-align: center; border: 1px solid var(--card-border); }
+    .matrix-table th { background: #1a243b; color: var(--text-sub); font-weight: 600; white-space: nowrap; }
+    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; min-width: 130px; font-weight: 600; }
+    .matrix-table th.sticky-col { background: #1a243b; z-index: 3; }
+    .matrix-cell { width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; background: #0f1626; }
+    .matrix-cell.filled { color: #fff; font-weight: bold; }
+
+    /* モーダル */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
     .modal.active { display: flex; }
-    .modal-content { background: var(--card-bg); border-radius: 16px; padding: 20px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); }
+    .modal-content { background: var(--card-bg); border-radius: 16px; padding: 22px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
     .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
     
     .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-    .switch { position: relative; width: 42px; height: 24px; }
+    .switch { position: relative; width: 44px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); border-radius: 24px; transition: .2s; }
     .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .2s; }
-    input:checked + .slider { background-color: var(--accent); }
-    input:checked + .slider:before { transform: translateX(18px); }
+    input:checked + .slider { background-color: var(--afternoon); }
+    input:checked + .slider:before { transform: translateX(20px); }
 
-    /* ヒートマップ（草）ビュー */
-    .heatmap-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
-    .heat-box { aspect-ratio: 1; border-radius: 4px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--text-sub); }
-    .heat-lvl-1 { background: #064e3b; color: #a7f3d0; }
-    .heat-lvl-2 { background: #047857; color: #fff; }
-    .heat-lvl-3 { background: #10b981; color: #fff; }
-
-    .input-box { width: 100%; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; margin-top: 8px; }
-    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 12px; }
-    .btn-primary { background: var(--accent); color: var(--bg); }
-    .btn-secondary { background: var(--border); color: var(--text); margin-top: 6px; }
+    .input-box { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-size: 0.9rem; margin-top: 8px; }
+    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 12px; font-size: 0.9rem; }
+    .btn-primary { background: var(--afternoon); color: var(--bg); }
+    .btn-secondary { background: var(--card-border); color: var(--text); margin-top: 6px; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>自己管理室 Tracker</h1>
-    <div>
-      <button class="btn-icon" onclick="requestNotification()" title="通知設定">🔔</button>
-      <button class="btn-icon" onclick="openModal('manage-modal')" style="margin-left: 10px;" title="習慣の管理">⚙️</button>
-    </div>
+    <h1>HABIT TRACKER</h1>
+    <button class="btn-icon" onclick="openModal('manage-modal')" title="Settings">⚙️</button>
   </header>
 
   <nav class="nav-tabs">
-    <div class="nav-tab active" onclick="switchTab('today')">今日</div>
-    <div class="nav-tab" onclick="switchTab('stats')">ヒートマップ</div>
+    <div class="nav-tab active" onclick="switchTab('today')">Today</div>
+    <div class="nav-tab" onclick="switchTab('stats')">Heatmap</div>
   </nav>
 
   <div class="container" id="view-today">
-    <div class="section-title">朝 (Morning)</div>
+    <div class="section-title title-morning">☀️ MORNING</div>
     <div id="list-morning"></div>
 
-    <div class="section-title">日中 (Afternoon)</div>
+    <div class="section-title title-afternoon">🌤 AFTERNOON</div>
     <div id="list-afternoon"></div>
 
-    <div class="section-title">夜 (Night)</div>
+    <div class="section-title title-night">🌙 NIGHT</div>
     <div id="list-night"></div>
   </div>
 
   <div class="container" id="view-stats" style="display: none;">
-    <div class="section-title">過去30日間の塗りつぶし記録</div>
-    <div class="heatmap-grid" id="heatmap-container"></div>
+    <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (LAST 30 DAYS)</div>
+    <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:8px;">Scroll horizontally to view past records.</p>
+    <div class="matrix-wrapper">
+      <table class="matrix-table" id="matrix-table">
+        <!-- 動的レンダリング -->
+      </table>
+    </div>
   </div>
 
-  <!-- 項目設定モーダル（絞り込み・追加・削除） -->
+  <!-- 設定・管理モーダル -->
   <div class="modal" id="manage-modal">
     <div class="modal-content">
-      <div class="modal-title">追跡する習慣の選択（絞り込み）</div>
-      <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:12px;">※疲れないよう、今追うものだけON（3〜5個推奨）にしてください</p>
+      <div class="modal-title">Active Habits</div>
+      <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:12px;">Toggle habits on/off (Keep 3–5 to avoid burnout).</p>
       <div id="manage-list"></div>
 
-      <div class="modal-title" style="margin-top: 24px; font-size: 0.95rem;">新しい習慣の追加</div>
+      <div class="modal-title" style="margin-top: 24px; font-size: 0.95rem;">Add New Habit</div>
       <select class="input-box" id="new-habit-time">
-        <option value="morning">朝</option>
-        <option value="afternoon">日中</option>
-        <option value="night">夜</option>
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="night">Night</option>
       </select>
-      <input type="text" class="input-box" id="new-habit-name" placeholder="習慣の名前">
-      <input type="text" class="input-box" id="new-habit-desc" placeholder="詳細（任意）">
-      <button class="btn btn-primary" onclick="addNewHabit()">追加する</button>
-      <button class="btn btn-secondary" onclick="closeModal('manage-modal')">閉じる</button>
+      <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name (e.g. Stretch or Run)">
+      <input type="text" class="input-box" id="new-habit-desc" placeholder="Details (e.g. Blue=Stretch, Pink=Run)">
+      <button class="btn btn-primary" onclick="addNewHabit()">Add Habit</button>
+      <button class="btn btn-secondary" onclick="closeModal('manage-modal')">Close</button>
     </div>
   </div>
 
   <script>
+    const COLORS = [
+      { name: 'Emerald', code: '#10b981' },
+      { name: 'Blue',    code: '#3b82f6' },
+      { name: 'Pink',    code: '#ec4899' },
+      { name: 'Amber',   code: '#f59e0b' },
+      { name: 'Purple',  code: '#8b5cf6' },
+      { name: 'Red',     code: '#ef4444' }
+    ];
+
     const DEFAULT_HABITS = [
       // 朝
       { id: 'm1', time: 'morning', name: 'やる気に頼らない着手', desc: '5秒ルールで起床・即行動', active: false },
       { id: 'm2', time: 'morning', name: '起床直後の水分補給', desc: '起き抜けに水＋塩分補給', active: false },
       { id: 'm3', time: 'morning', name: '朝起きてすぐの光', desc: '外に出て朝日を浴び体内時計リセット', active: true },
-      { id: 'm4', time: 'morning', name: '朝のゾーン2運動', desc: '会話できる程度の軽いランや散歩', active: false },
+      { id: 'm4', time: 'morning', name: '朝のゾーン2運動', desc: 'ストレッチ(青) / ランニング(ピンク)', active: true },
       { id: 'm5', time: 'morning', name: '起床後90〜120分のカフェイン断ち', desc: '起きてすぐのコーヒーを控える', active: false },
       { id: 'm6', time: 'morning', name: 'スマホの物理的隔離', desc: '作業前に電源OFFまたは別室へ', active: true },
-      { id: 'm7', time: 'morning', name: '朝一番のディープワーク', desc: '最重要タスクを朝イチで片付ける', active: true },
+      { id: 'm7', time: 'morning', name: '朝一番のディープワーク', desc: '最重要タスクを朝イチで片付ける', active: false },
       { id: 'm8', time: 'morning', name: '集中音源とタイムアタック', desc: 'ブラウンノイズ＋タイマー', active: false },
       // 日中
       { id: 'a1', time: 'afternoon', name: 'オン・オフのメリハリ', desc: '瞑想またはNSDRで脳を回復', active: false },
@@ -141,8 +167,9 @@
       { id: 'n5', time: 'night', name: '睡眠のQQRT（量・質・規則性）', desc: '早起きより睡眠時間・規則性を優先', active: true }
     ];
 
-    let habits = JSON.parse(localStorage.getItem('habits')) || DEFAULT_HABITS;
-    let logs = JSON.parse(localStorage.getItem('habit_logs')) || {}; // { 'YYYY-MM-DD': ['m3', 'm6'] }
+    let habits = JSON.parse(localStorage.getItem('habits_v2')) || DEFAULT_HABITS;
+    // logs構造: { "YYYY-MM-DD": { "habit_id": "#10b981" } }
+    let logs = JSON.parse(localStorage.getItem('habit_logs_v2')) || {};
 
     function getTodayKey() {
       const d = new Date();
@@ -150,26 +177,36 @@
     }
 
     function save() {
-      localStorage.setItem('habits', JSON.stringify(habits));
-      localStorage.setItem('habit_logs', JSON.stringify(logs));
+      localStorage.setItem('habits_v2', JSON.stringify(habits));
+      localStorage.setItem('habit_logs_v2', JSON.stringify(logs));
     }
 
-    function toggleHabit(id) {
+    function setHabitColor(habitId, color) {
       const today = getTodayKey();
-      if (!logs[today]) logs[today] = [];
-      const idx = logs[today].indexOf(id);
-      if (idx > -1) {
-        logs[today].splice(idx, 1);
+      if (!logs[today]) logs[today] = {};
+      
+      // すでに同じ色が選択されていたら解除
+      if (logs[today][habitId] === color) {
+        delete logs[today][habitId];
       } else {
-        logs[today].push(id);
+        logs[today][habitId] = color;
       }
+      
       save();
       renderToday();
     }
 
+    function togglePicker(habitId) {
+      document.querySelectorAll('.color-picker').forEach(p => {
+        if (p.id !== `picker-${habitId}`) p.classList.remove('show');
+      });
+      const picker = document.getElementById(`picker-${habitId}`);
+      if (picker) picker.classList.toggle('show');
+    }
+
     function renderToday() {
       const today = getTodayKey();
-      const doneList = logs[today] || [];
+      const todayLogs = logs[today] || {};
 
       ['morning', 'afternoon', 'night'].forEach(time => {
         const container = document.getElementById(`list-${time}`);
@@ -177,38 +214,106 @@
         const list = habits.filter(h => h.time === time && h.active);
         
         if (list.length === 0) {
-          container.innerHTML = `<div style="font-size:0.8rem; color:var(--text-sub); padding:8px 0;">追跡中の項目がありません（右上の⚙️から追加可能）</div>`;
+          container.innerHTML = `<div style="font-size:0.8rem; color:var(--text-sub); padding:10px 0;">No active habits in this section.</div>`;
           return;
         }
 
         list.forEach(h => {
-          const isDone = doneList.includes(h.id);
+          const activeColor = todayLogs[h.id] || null;
+          const isDone = !!activeColor;
           const div = document.createElement('div');
           div.className = 'habit-card';
+
+          // カラーピッカー用のHTML
+          let pickerDots = COLORS.map(c => 
+            `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
+          ).join('');
+
           div.innerHTML = `
             <div class="habit-info">
               <div class="habit-name">${h.name}</div>
               <div class="habit-desc">${h.desc}</div>
             </div>
-            <button class="check-btn ${isDone ? 'checked' : ''}" onclick="toggleHabit('${h.id}')">
-              ✓
-            </button>
+            <div class="action-group">
+              <div class="color-picker" id="picker-${h.id}">
+                ${pickerDots}
+              </div>
+              <button 
+                class="check-btn ${isDone ? 'checked' : ''}" 
+                style="${isDone ? `background:${activeColor}; border-color:${activeColor};` : ''}"
+                onclick="togglePicker('${h.id}')">
+                ✓
+              </button>
+            </div>
           `;
           container.appendChild(div);
         });
       });
     }
 
+    function renderHeatmap() {
+      const table = document.getElementById('matrix-table');
+      table.innerHTML = '';
+
+      // 過去30日分の日付配列を作成
+      const days = [];
+      const today = new Date();
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        days.push({ key, label: `${d.getMonth()+1}/${d.getDate()}` });
+      }
+
+      // テーブルヘッダー
+      let thead = '<thead><tr><th class="sticky-col">Habit</th>';
+      days.forEach(day => { thead += `<th>${day.label}</th>`; });
+      thead += '</tr></thead>';
+
+      // テーブルボディ（有効な習慣ごとに1行）
+      let tbody = '<tbody>';
+      const activeHabits = habits.filter(h => h.active);
+
+      activeHabits.forEach(h => {
+        let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
+        tbody += `<tr><td class="sticky-col" style="color:${timeColor}">${h.name}</td>`;
+        days.forEach(day => {
+          const dayLog = logs[day.key] || {};
+          const cellColor = dayLog[h.id];
+          if (cellColor) {
+            tbody += `<td><span class="matrix-cell filled" style="background:${cellColor}">✓</span></td>`;
+          } else {
+            tbody += `<td><span class="matrix-cell"></span></td>`;
+          }
+        });
+        tbody += '</tr>';
+      });
+      tbody += '</tbody>';
+
+      table.innerHTML = thead + tbody;
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tab === 'today' && i === 0) || (tab === 'stats' && i === 1));
+      });
+      document.getElementById('view-today').style.display = tab === 'today' ? 'block' : 'none';
+      document.getElementById('view-stats').style.display = tab === 'stats' ? 'block' : 'none';
+      if (tab === 'stats') renderHeatmap();
+    }
+
     function renderManageModal() {
       const container = document.getElementById('manage-list');
       container.innerHTML = '';
       habits.forEach(h => {
+        let timeLabel = h.time === 'morning' ? 'Morning' : h.time === 'afternoon' ? 'Afternoon' : 'Night';
+        let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
         const div = document.createElement('div');
         div.className = 'manage-item';
         div.innerHTML = `
           <div>
             <div>${h.name}</div>
-            <div style="font-size:0.7rem; color:var(--text-sub)">${h.time === 'morning' ? '朝' : h.time === 'afternoon' ? '日中' : '夜'}</div>
+            <div style="font-size:0.7rem; color:${timeColor}">${timeLabel}</div>
           </div>
           <label class="switch">
             <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
@@ -230,7 +335,7 @@
       const time = document.getElementById('new-habit-time').value;
       const name = document.getElementById('new-habit-name').value.trim();
       const desc = document.getElementById('new-habit-desc').value.trim();
-      if (!name) return alert('習慣の名前を入力してください');
+      if (!name) return alert('Please enter a habit name.');
 
       habits.push({ id: 'custom_' + Date.now(), time, name, desc, active: true });
       save();
@@ -238,39 +343,7 @@
       document.getElementById('new-habit-desc').value = '';
       renderManageModal();
       renderToday();
-      alert('追加しました！');
-    }
-
-    function renderHeatmap() {
-      const container = document.getElementById('heatmap-container');
-      container.innerHTML = '';
-      const today = new Date();
-
-      for (let i = 29; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(today.getDate() - i);
-        const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        const count = (logs[k] || []).length;
-
-        const box = document.createElement('div');
-        box.className = 'heat-box';
-        if (count >= 4) box.classList.add('heat-lvl-3');
-        else if (count >= 2) box.classList.add('heat-lvl-2');
-        else if (count >= 1) box.classList.add('heat-lvl-1');
-        
-        box.innerText = d.getDate();
-        box.title = `${k}: ${count}個達成`;
-        container.appendChild(box);
-      }
-    }
-
-    function switchTab(tab) {
-      document.querySelectorAll('.nav-tab').forEach((t, i) => {
-        t.classList.toggle('active', (tab === 'today' && i === 0) || (tab === 'stats' && i === 1));
-      });
-      document.getElementById('view-today').style.display = tab === 'today' ? 'block' : 'none';
-      document.getElementById('view-stats').style.display = tab === 'stats' ? 'block' : 'none';
-      if (tab === 'stats') renderHeatmap();
+      alert('Habit added successfully!');
     }
 
     function openModal(id) {
@@ -279,32 +352,14 @@
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    // 通知許可 & タイマー通知
-    function requestNotification() {
-      if (!("Notification" in window)) return alert("このブラウザは通知に対応していません");
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          alert("通知を許可しました！朝7時、昼12時、夜21時にリマインドします（ページを開いている時/バックグラウンド時）");
-          checkNotificationSchedule();
-        }
-      });
-    }
+    // 画面のどこかをタップしたらカラーパレットを閉じる
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.action-group')) {
+        document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('show'));
+      }
+    });
 
-    function checkNotificationSchedule() {
-      setInterval(() => {
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const s = now.getSeconds();
-        if (m === 0 && s === 0) {
-          if (h === 7) new Notification("朝のルーティン", { body: "朝日・水分・最優先タスクを意識しましょう！" });
-          if (h === 12) new Notification("日中のルーティン", { body: "ご機嫌な振る舞い・血糖値管理・脳の小休憩！" });
-          if (h === 21) new Notification("夜のルーティン", { body: "今日のKPTジャーナリングと塗りつぶし記録をしましょう！" });
-        }
-      }, 1000);
-    }
-
-    // 初期起動
+    // 初期化
     renderToday();
   </script>
 </body>
