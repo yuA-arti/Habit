@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>HABIT TRACKER</title>
   <style>
     :root {
@@ -11,71 +11,79 @@
       --card-border: #232f48;
       --text: #f8fafc;
       --text-sub: #8292ab;
-      --morning: #f59e0b;   /* Morning: Warm Amber */
-      --afternoon: #38bdf8; /* Afternoon: Sky Blue */
-      --night: #a855f7;     /* Night: Vivid Purple */
+      --morning: #f59e0b;
+      --afternoon: #38bdf8;
+      --night: #a855f7;
       --border: #222f46;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 70px; -webkit-tap-highlight-color: transparent; }
+    html, body { width: 100%; overflow-x: hidden; background-color: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
+    body { padding-bottom: 80px; }
     
-    header { padding: 18px 20px; background: rgba(21, 29, 48, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
-    h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.1em; color: #fff; }
-    .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    header { padding: 14px 16px; background: rgba(21, 29, 48, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.08em; color: #fff; }
+    .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 1.25rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
 
-    .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); }
-    .nav-tab { flex: 1; text-align: center; padding: 14px 0; font-size: 0.85rem; color: var(--text-sub); font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); width: 100%; }
+    .nav-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 0.85rem; color: var(--text-sub); font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
     .nav-tab.active { color: #fff; border-color: var(--afternoon); }
 
-    .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+    .container { padding: 12px 14px; max-width: 600px; margin: 0 auto; width: 100%; }
     
-    /* セクション別のカラー設定 */
-    .section-title { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.12em; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+    .section-title { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; margin: 16px 0 8px; display: flex; align-items: center; gap: 6px; }
     .title-morning { color: var(--morning); }
     .title-afternoon { color: var(--afternoon); }
     .title-night { color: var(--night); }
     
-    .habit-card { background: var(--card-bg); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
-    .habit-info { flex: 1; margin-right: 12px; }
-    .habit-name { font-size: 0.95rem; font-weight: 600; }
-    .habit-desc { font-size: 0.75rem; color: var(--text-sub); margin-top: 3px; }
+    /* カード */
+    .habit-card { background: var(--card-bg); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; position: relative; }
+    .habit-info { flex: 1; min-width: 0; margin-right: 10px; }
+    .habit-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    /* 完了ボタン & カラーパレット */
-    .action-group { display: flex; align-items: center; gap: 8px; position: relative; }
-    .check-btn { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: transparent; transition: all 0.2s; }
-    .check-btn.checked { color: #fff; transform: scale(1.05); }
+    /* ボタン & カラーパレット */
+    .action-group { position: relative; display: flex; align-items: center; }
+    .check-btn { width: 40px; height: 40px; border-radius: 10px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; }
+    .check-btn.checked { color: #fff; transform: scale(1.03); }
 
-    .color-picker { display: none; position: absolute; right: 52px; background: #1a243b; border: 1px solid var(--card-border); padding: 8px; border-radius: 12px; gap: 6px; z-index: 20; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .color-picker { display: none; position: absolute; right: 48px; background: #1a243b; border: 1px solid var(--card-border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
     .color-picker.show { display: flex; }
-    .color-dot { width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.15s; }
-    .color-dot:hover { transform: scale(1.15); }
+    .color-dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s; }
+    .color-dot:active { transform: scale(0.9); }
 
-    /* ヒートマップ（マトリクス表） */
-    .matrix-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg); margin-top: 10px; }
-    .matrix-table { border-collapse: collapse; min-width: 100%; font-size: 0.75rem; }
-    .matrix-table th, .matrix-table td { padding: 8px; text-align: center; border: 1px solid var(--card-border); }
+    /* ヒートマップ（横スクロールのみ許容） */
+    .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 10px; background: var(--card-bg); margin-top: 10px; }
+    .matrix-table { border-collapse: collapse; font-size: 0.72rem; width: max-content; }
+    .matrix-table th, .matrix-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--card-border); }
     .matrix-table th { background: #1a243b; color: var(--text-sub); font-weight: 600; white-space: nowrap; }
-    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; min-width: 130px; font-weight: 600; }
+    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; max-width: 130px; min-width: 110px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .matrix-table th.sticky-col { background: #1a243b; z-index: 3; }
-    .matrix-cell { width: 28px; height: 28px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; background: #0f1626; }
+    .matrix-cell { width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: #0f1626; font-size: 0.65rem; }
     .matrix-cell.filled { color: #fff; font-weight: bold; }
 
     /* モーダル */
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 12px; backdrop-filter: blur(4px); }
     .modal.active { display: flex; }
-    .modal-content { background: var(--card-bg); border-radius: 16px; padding: 22px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
-    .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+    .modal-content { background: var(--card-bg); border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
+    .modal-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
     
-    .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-    .switch { position: relative; width: 44px; height: 24px; }
+    /* 並び替え対応リスト */
+    .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; gap: 8px; }
+    .manage-info { flex: 1; min-width: 0; }
+    .manage-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reorder-btns { display: flex; gap: 4px; }
+    .reorder-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; }
+    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
+    
+    .switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); border-radius: 24px; transition: .2s; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .2s; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); border-radius: 22px; transition: .2s; }
+    .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .2s; }
     input:checked + .slider { background-color: var(--afternoon); }
-    input:checked + .slider:before { transform: translateX(20px); }
+    input:checked + .slider:before { transform: translateX(18px); }
 
-    .input-box { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-size: 0.9rem; margin-top: 8px; }
-    .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 12px; font-size: 0.9rem; }
+    .input-box { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-size: 0.85rem; margin-top: 8px; }
+    .btn { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.85rem; }
     .btn-primary { background: var(--afternoon); color: var(--bg); }
     .btn-secondary { background: var(--card-border); color: var(--text); margin-top: 6px; }
   </style>
@@ -105,28 +113,26 @@
 
   <div class="container" id="view-stats" style="display: none;">
     <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (LAST 30 DAYS)</div>
-    <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:8px;">Scroll horizontally to view past records.</p>
     <div class="matrix-wrapper">
-      <table class="matrix-table" id="matrix-table">
-        <!-- 動的レンダリング -->
-      </table>
+      <table class="matrix-table" id="matrix-table"></table>
     </div>
   </div>
 
-  <!-- 設定・管理モーダル -->
+  <!-- 設定 & 並び替えモーダル -->
   <div class="modal" id="manage-modal">
     <div class="modal-content">
-      <div class="modal-title">Active Habits</div>
-      <p style="font-size:0.75rem; color:var(--text-sub); margin-bottom:12px;">Toggle habits on/off (Keep 3–5 to avoid burnout).</p>
+      <div class="modal-title">Habits Order & Active</div>
+      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Use ▲/▼ to reorder, toggle switches to show/hide.</p>
+      
       <div id="manage-list"></div>
 
-      <div class="modal-title" style="margin-top: 24px; font-size: 0.95rem;">Add New Habit</div>
+      <div class="modal-title" style="margin-top: 20px; font-size: 0.9rem;">Add New Habit</div>
       <select class="input-box" id="new-habit-time">
         <option value="morning">Morning</option>
         <option value="afternoon">Afternoon</option>
         <option value="night">Night</option>
       </select>
-      <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name (e.g. Stretch or Run)">
+      <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name (e.g. Morning Stretch)">
       <input type="text" class="input-box" id="new-habit-desc" placeholder="Details (e.g. Blue=Stretch, Pink=Run)">
       <button class="btn btn-primary" onclick="addNewHabit()">Add Habit</button>
       <button class="btn btn-secondary" onclick="closeModal('manage-modal')">Close</button>
@@ -167,9 +173,8 @@
       { id: 'n5', time: 'night', name: '睡眠のQQRT（量・質・規則性）', desc: '早起きより睡眠時間・規則性を優先', active: true }
     ];
 
-    let habits = JSON.parse(localStorage.getItem('habits_v2')) || DEFAULT_HABITS;
-    // logs構造: { "YYYY-MM-DD": { "habit_id": "#10b981" } }
-    let logs = JSON.parse(localStorage.getItem('habit_logs_v2')) || {};
+    let habits = JSON.parse(localStorage.getItem('habits_v3')) || DEFAULT_HABITS;
+    let logs = JSON.parse(localStorage.getItem('habit_logs_v3')) || {};
 
     function getTodayKey() {
       const d = new Date();
@@ -177,15 +182,14 @@
     }
 
     function save() {
-      localStorage.setItem('habits_v2', JSON.stringify(habits));
-      localStorage.setItem('habit_logs_v2', JSON.stringify(logs));
+      localStorage.setItem('habits_v3', JSON.stringify(habits));
+      localStorage.setItem('habit_logs_v3', JSON.stringify(logs));
     }
 
     function setHabitColor(habitId, color) {
       const today = getTodayKey();
       if (!logs[today]) logs[today] = {};
       
-      // すでに同じ色が選択されていたら解除
       if (logs[today][habitId] === color) {
         delete logs[today][habitId];
       } else {
@@ -214,7 +218,7 @@
         const list = habits.filter(h => h.time === time && h.active);
         
         if (list.length === 0) {
-          container.innerHTML = `<div style="font-size:0.8rem; color:var(--text-sub); padding:10px 0;">No active habits in this section.</div>`;
+          container.innerHTML = `<div style="font-size:0.75rem; color:var(--text-sub); padding:6px 0;">No active habits in this section.</div>`;
           return;
         }
 
@@ -224,7 +228,6 @@
           const div = document.createElement('div');
           div.className = 'habit-card';
 
-          // カラーピッカー用のHTML
           let pickerDots = COLORS.map(c => 
             `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
           ).join('');
@@ -255,7 +258,6 @@
       const table = document.getElementById('matrix-table');
       table.innerHTML = '';
 
-      // 過去30日分の日付配列を作成
       const days = [];
       const today = new Date();
       for (let i = 29; i >= 0; i--) {
@@ -265,18 +267,16 @@
         days.push({ key, label: `${d.getMonth()+1}/${d.getDate()}` });
       }
 
-      // テーブルヘッダー
       let thead = '<thead><tr><th class="sticky-col">Habit</th>';
       days.forEach(day => { thead += `<th>${day.label}</th>`; });
       thead += '</tr></thead>';
 
-      // テーブルボディ（有効な習慣ごとに1行）
       let tbody = '<tbody>';
       const activeHabits = habits.filter(h => h.active);
 
       activeHabits.forEach(h => {
         let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
-        tbody += `<tr><td class="sticky-col" style="color:${timeColor}">${h.name}</td>`;
+        tbody += `<tr><td class="sticky-col" style="color:${timeColor}" title="${h.name}">${h.name}</td>`;
         days.forEach(day => {
           const dayLog = logs[day.key] || {};
           const cellColor = dayLog[h.id];
@@ -302,26 +302,67 @@
       if (tab === 'stats') renderHeatmap();
     }
 
+    /* 並び替え対応のモーダルレンダリング */
     function renderManageModal() {
       const container = document.getElementById('manage-list');
       container.innerHTML = '';
-      habits.forEach(h => {
-        let timeLabel = h.time === 'morning' ? 'Morning' : h.time === 'afternoon' ? 'Afternoon' : 'Night';
-        let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
-        const div = document.createElement('div');
-        div.className = 'manage-item';
-        div.innerHTML = `
-          <div>
-            <div>${h.name}</div>
-            <div style="font-size:0.7rem; color:${timeColor}">${timeLabel}</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
-            <span class="slider"></span>
-          </label>
-        `;
-        container.appendChild(div);
+      
+      ['morning', 'afternoon', 'night'].forEach(t => {
+        const timeHabits = habits.filter(h => h.time === t);
+        const timeLabel = t === 'morning' ? 'Morning' : t === 'afternoon' ? 'Afternoon' : 'Night';
+        const timeColor = t === 'morning' ? 'var(--morning)' : t === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
+        
+        const headerDiv = document.createElement('div');
+        headerDiv.style.cssText = `font-size:0.75rem; font-weight:800; color:${timeColor}; margin:12px 0 4px;`;
+        headerDiv.innerText = timeLabel;
+        container.appendChild(headerDiv);
+
+        timeHabits.forEach((h, index) => {
+          const div = document.createElement('div');
+          div.className = 'manage-item';
+          div.innerHTML = `
+            <div class="manage-info">
+              <div class="manage-name">${h.name}</div>
+            </div>
+            <div class="reorder-btns">
+              <button class="reorder-btn" ${index === 0 ? 'disabled' : ''} onclick="moveHabit('${h.id}', -1)">▲</button>
+              <button class="reorder-btn" ${index === timeHabits.length - 1 ? 'disabled' : ''} onclick="moveHabit('${h.id}', 1)">▼</button>
+            </div>
+            <label class="switch">
+              <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
+              <span class="slider"></span>
+            </label>
+          `;
+          container.appendChild(div);
+        });
       });
+    }
+
+    function moveHabit(id, direction) {
+      const idx = habits.findIndex(h => h.id === id);
+      if (idx === -1) return;
+      const current = habits[idx];
+      
+      // 同じ時間帯のアイテム同士で位置を入れ替え
+      let targetIdx = -1;
+      if (direction === -1) {
+        for (let i = idx - 1; i >= 0; i--) {
+          if (habits[i].time === current.time) { targetIdx = i; break; }
+        }
+      } else {
+        for (let i = idx + 1; i < habits.length; i++) {
+          if (habits[i].time === current.time) { targetIdx = i; break; }
+        }
+      }
+
+      if (targetIdx !== -1) {
+        const temp = habits[idx];
+        habits[idx] = habits[targetIdx];
+        habits[targetIdx] = temp;
+        save();
+        renderManageModal();
+        renderToday();
+      }
     }
 
     function toggleActive(id) {
@@ -343,7 +384,6 @@
       document.getElementById('new-habit-desc').value = '';
       renderManageModal();
       renderToday();
-      alert('Habit added successfully!');
     }
 
     function openModal(id) {
@@ -352,14 +392,12 @@
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    // 画面のどこかをタップしたらカラーパレットを閉じる
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.action-group')) {
         document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('show'));
       }
     });
 
-    // 初期化
     renderToday();
   </script>
 </body>
