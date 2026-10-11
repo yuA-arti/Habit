@@ -31,7 +31,7 @@
 
     .container { padding: 12px 14px; max-width: 600px; margin: 0 auto; width: 100%; }
     
-    /* 日付セレクターバー */
+    /* 日付バー */
     .date-bar { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 12px; margin-top: 6px; }
     .date-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
     .date-nav-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
@@ -43,18 +43,31 @@
     .title-night { color: var(--night); }
     
     /* カード */
-    .habit-container { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--card-border); overflow: hidden; transition: border-color 0.2s; }
+    .habit-container { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--card-border); overflow: hidden; }
     .habit-card { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: relative; }
     .habit-info { flex: 1; min-width: 0; margin-right: 10px; cursor: pointer; }
     .habit-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
     .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    /* 隠しメモ行 */
-    .memo-section { display: none; padding: 0 14px 12px; border-top: 1px dashed var(--border); background: rgba(11, 15, 25, 0.4); }
-    .memo-section.show { display: block; }
-    .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; margin-top: 8px; }
+    /* サブ入力（Note / Todo） */
+    .sub-panel { display: none; padding: 10px 14px 12px; border-top: 1px dashed var(--border); background: rgba(11, 15, 25, 0.5); }
+    .sub-panel.show { display: block; }
+    .sub-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
+    .sub-tab-btn { background: #1a243b; border: 1px solid var(--card-border); color: var(--text-sub); padding: 3px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; cursor: pointer; }
+    .sub-tab-btn.active { background: var(--afternoon); color: var(--bg); border-color: var(--afternoon); }
+
+    .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; }
     .memo-input:focus { border-color: var(--afternoon); outline: none; }
-    .memo-tag { font-size: 0.65rem; color: var(--afternoon); font-weight: 700; margin-top: 6px; display: inline-block; }
+
+    /* TODOリスト */
+    .todo-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; background: var(--bg); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); }
+    .todo-item.done { text-decoration: line-through; opacity: 0.5; }
+    .todo-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+    .todo-del { background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; margin-left: auto; }
+    .todo-add-box { display: flex; gap: 6px; }
+    .todo-input { flex: 1; padding: 6px 8px; font-size: 0.78rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+    .todo-add-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); padding: 0 10px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; }
 
     /* ボタン & カラーパレット */
     .action-group { position: relative; display: flex; align-items: center; gap: 6px; }
@@ -66,7 +79,6 @@
     .color-picker { display: none; position: absolute; right: 48px; background: #1a243b; border: 1px solid var(--card-border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
     .color-picker.show { display: flex; }
     .color-dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s; }
-    .color-dot:active { transform: scale(0.9); }
 
     /* ヒートマップ */
     .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 10px; background: var(--card-bg); margin-top: 10px; }
@@ -85,7 +97,6 @@
     .modal-content { background: var(--card-bg); border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
     .modal-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
     
-    /* 管理リスト */
     .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; gap: 6px; }
     .manage-info { flex: 1; min-width: 0; }
     .manage-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -108,6 +119,7 @@
     .btn { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.85rem; }
     .btn-primary { background: var(--afternoon); color: var(--bg); }
     .btn-secondary { background: var(--card-border); color: var(--text); margin-top: 6px; }
+    .backup-zone { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
   </style>
 </head>
 <body>
@@ -123,7 +135,6 @@
   </nav>
 
   <div class="container" id="view-today">
-    <!-- 日付バー -->
     <div class="date-bar">
       <button class="date-nav-btn" onclick="changeDate(-1)">◀ Prev</button>
       <div style="text-align:center;">
@@ -145,7 +156,6 @@
 
   <div class="container" id="view-stats" style="display: none;">
     <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (LAST 30 DAYS)</div>
-    <p style="font-size:0.7rem; color:var(--text-sub); margin-bottom:8px;">Blue column represents Today. Records persist automatically.</p>
     <div class="matrix-wrapper">
       <table class="matrix-table" id="matrix-table"></table>
     </div>
@@ -155,7 +165,7 @@
   <div class="modal" id="manage-modal">
     <div class="modal-content">
       <div class="modal-title">Habits Management</div>
-      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Reorder (▲/▼), Edit (✏️), Toggle (Switch), or Delete (🗑️).</p>
+      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Reorder (▲/▼), Edit (✏️), Toggle (Switch), Delete (🗑️).</p>
       
       <div id="manage-list"></div>
 
@@ -168,6 +178,12 @@
       <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name">
       <input type="text" class="input-box" id="new-habit-desc" placeholder="Details / Hint">
       <button class="btn btn-primary" onclick="addNewHabit()">Add Habit</button>
+
+      <div class="backup-zone">
+        <button class="btn btn-secondary" style="margin-top:0;" onclick="exportData()">Export Backup</button>
+        <button class="btn btn-secondary" style="margin-top:0;" onclick="document.getElementById('file-import').click()">Import Backup</button>
+        <input type="file" id="file-import" style="display:none" onchange="importData(event)">
+      </div>
       <button class="btn btn-secondary" onclick="closeModal('manage-modal')">Close</button>
     </div>
   </div>
@@ -190,9 +206,11 @@
   </div>
 
   <script>
-    const STORAGE_KEY_HABITS = 'habit_tracker_master_v3';
-    const STORAGE_KEY_LOGS   = 'habit_tracker_logs_v3';
-    const STORAGE_KEY_MEMOS  = 'habit_tracker_memos_v3';
+    // 永久固定のマスターキー
+    const KEY_HABITS = 'HT_MASTER_HABITS';
+    const KEY_LOGS   = 'HT_MASTER_LOGS';
+    const KEY_MEMOS  = 'HT_MASTER_MEMOS';
+    const KEY_TODOS  = 'HT_MASTER_TODOS';
 
     const COLORS = [
       { name: 'Emerald', code: '#10b981' },
@@ -227,7 +245,9 @@
     let habits = [];
     let logs = {};
     let memos = {};
-    let selectedDate = new Date(); // 画面で操作中の日付
+    let todos = {}; // { "YYYY-MM-DD": { "habit_id": [ { id, text, done } ] } }
+    let subTabState = {}; // { "habit_id": "note" | "todo" }
+    let selectedDate = new Date();
 
     function formatDateKey(d) {
       const year = d.getFullYear();
@@ -236,36 +256,56 @@
       return `${year}-${month}-${day}`;
     }
 
-    function getRealTodayKey() {
-      return formatDateKey(new Date());
-    }
+    function getRealTodayKey() { return formatDateKey(new Date()); }
+    function getSelectedDateKey() { return formatDateKey(selectedDate); }
 
-    function getSelectedDateKey() {
-      return formatDateKey(selectedDate);
-    }
-
-    function loadData() {
+    // 過去バージョン（v1, v2, v3）からの安全な自動マイグレーション
+    function migrateAndLoadData() {
       try {
-        const storedHabits = localStorage.getItem(STORAGE_KEY_HABITS);
-        habits = storedHabits ? JSON.parse(storedHabits) : DEFAULT_HABITS;
-        const storedLogs = localStorage.getItem(STORAGE_KEY_LOGS);
-        logs = storedLogs ? JSON.parse(storedLogs) : {};
-        const storedMemos = localStorage.getItem(STORAGE_KEY_MEMOS);
-        memos = storedMemos ? JSON.parse(storedMemos) : {};
+        let savedHabits = localStorage.getItem(KEY_HABITS);
+        if (!savedHabits) {
+          savedHabits = localStorage.getItem('habit_tracker_master_v3') || 
+                        localStorage.getItem('habit_tracker_master_v2') || 
+                        localStorage.getItem('habits_v3') || 
+                        localStorage.getItem('habits_v2');
+        }
+        habits = savedHabits ? JSON.parse(savedHabits) : DEFAULT_HABITS;
+
+        let savedLogs = localStorage.getItem(KEY_LOGS);
+        if (!savedLogs) {
+          savedLogs = localStorage.getItem('habit_tracker_logs_v3') || 
+                      localStorage.getItem('habit_tracker_logs_v2') || 
+                      localStorage.getItem('habit_logs_v3') || 
+                      localStorage.getItem('habit_logs_v2');
+        }
+        logs = savedLogs ? JSON.parse(savedLogs) : {};
+
+        let savedMemos = localStorage.getItem(KEY_MEMOS);
+        if (!savedMemos) {
+          savedMemos = localStorage.getItem('habit_tracker_memos_v3') || 
+                       localStorage.getItem('habit_tracker_memos_v2');
+        }
+        memos = savedMemos ? JSON.parse(savedMemos) : {};
+
+        let savedTodos = localStorage.getItem(KEY_TODOS);
+        todos = savedTodos ? JSON.parse(savedTodos) : {};
+
+        saveData(); // 新しいキーに統合保存
       } catch (e) {
+        console.error("Migration error:", e);
         habits = DEFAULT_HABITS;
-        logs = {};
-        memos = {};
+        logs = {}; memos = {}; todos = {};
       }
     }
 
     function saveData() {
       try {
-        localStorage.setItem(STORAGE_KEY_HABITS, JSON.stringify(habits));
-        localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs));
-        localStorage.setItem(STORAGE_KEY_MEMOS, JSON.stringify(memos));
+        localStorage.setItem(KEY_HABITS, JSON.stringify(habits));
+        localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
+        localStorage.setItem(KEY_MEMOS, JSON.stringify(memos));
+        localStorage.setItem(KEY_TODOS, JSON.stringify(todos));
       } catch (e) {
-        console.error("Storage error:", e);
+        console.error("Save failed:", e);
       }
     }
 
@@ -312,9 +352,14 @@
       if (picker) picker.classList.toggle('show');
     }
 
-    function toggleMemo(habitId) {
-      const el = document.getElementById(`memo-section-${habitId}`);
+    function toggleSubPanel(habitId) {
+      const el = document.getElementById(`sub-panel-${habitId}`);
       if (el) el.classList.toggle('show');
+    }
+
+    function switchSubTab(habitId, mode) {
+      subTabState[habitId] = mode;
+      renderToday();
     }
 
     function updateMemo(habitId, val) {
@@ -324,11 +369,46 @@
       saveData();
     }
 
+    function addTodo(habitId) {
+      const input = document.getElementById(`todo-input-${habitId}`);
+      const text = input.value.trim();
+      if (!text) return;
+      const dateKey = getSelectedDateKey();
+      if (!todos[dateKey]) todos[dateKey] = {};
+      if (!todos[dateKey][habitId]) todos[dateKey][habitId] = [];
+
+      todos[dateKey][habitId].push({ id: 't_' + Date.now(), text, done: false });
+      input.value = '';
+      saveData();
+      renderToday();
+    }
+
+    function toggleTodo(habitId, todoId) {
+      const dateKey = getSelectedDateKey();
+      const list = todos[dateKey]?.[habitId] || [];
+      const item = list.find(t => t.id === todoId);
+      if (item) {
+        item.done = !item.done;
+        saveData();
+        renderToday();
+      }
+    }
+
+    function deleteTodo(habitId, todoId) {
+      const dateKey = getSelectedDateKey();
+      if (todos[dateKey]?.[habitId]) {
+        todos[dateKey][habitId] = todos[dateKey][habitId].filter(t => t.id !== todoId);
+        saveData();
+        renderToday();
+      }
+    }
+
     function renderToday() {
       updateDateLabel();
       const dateKey = getSelectedDateKey();
       const dayLogs = logs[dateKey] || {};
       const dayMemos = memos[dateKey] || {};
+      const dayTodos = todos[dateKey] || {};
 
       ['morning', 'afternoon', 'night'].forEach(time => {
         const container = document.getElementById(`list-${time}`);
@@ -344,7 +424,10 @@
           const activeColor = dayLogs[h.id] || null;
           const isDone = !!activeColor;
           const memoText = dayMemos[h.id] || '';
-          
+          const todoList = dayTodos[h.id] || [];
+          const currentSubTab = subTabState[h.id] || 'note';
+          const hasSubContent = memoText.trim() !== '' || todoList.length > 0;
+
           const wrapper = document.createElement('div');
           wrapper.className = 'habit-container';
 
@@ -352,17 +435,26 @@
             `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
           ).join('');
 
+          // TODO Items HTML
+          let todoItemsHtml = todoList.map(t => `
+            <div class="todo-item ${t.done ? 'done' : ''}">
+              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${h.id}', '${t.id}')">
+              <span>${t.text}</span>
+              <button class="todo-del" onclick="deleteTodo('${h.id}', '${t.id}')">✕</button>
+            </div>
+          `).join('');
+
           wrapper.innerHTML = `
             <div class="habit-card">
-              <div class="habit-info" onclick="toggleMemo('${h.id}')">
+              <div class="habit-info" onclick="toggleSubPanel('${h.id}')">
                 <div class="habit-name">
                   ${h.name}
-                  <span style="font-size:0.7rem; opacity:0.6;">${memoText ? '📝' : '▾'}</span>
+                  <span style="font-size:0.7rem; opacity:0.6;">${hasSubContent ? '📝' : '▾'}</span>
                 </div>
                 <div class="habit-desc">${h.desc}</div>
               </div>
               <div class="action-group">
-                <button class="memo-toggle-btn ${memoText ? 'has-content' : ''}" onclick="toggleMemo('${h.id}')" title="Note/Goal">
+                <button class="memo-toggle-btn ${hasSubContent ? 'has-content' : ''}" onclick="toggleSubPanel('${h.id}')" title="Note/Todo">
                   ✏️
                 </button>
                 <div class="color-picker" id="picker-${h.id}">
@@ -376,9 +468,24 @@
                 </button>
               </div>
             </div>
-            <div class="memo-section ${memoText ? 'show' : ''}" id="memo-section-${h.id}">
-              <span class="memo-tag">NOTE / GOAL (${dateKey})</span>
-              <textarea class="memo-input" rows="2" placeholder="今日の具体的な目標やメモを入力..." oninput="updateMemo('${h.id}', this.value)">${memoText}</textarea>
+            
+            <div class="sub-panel ${hasSubContent ? 'show' : ''}" id="sub-panel-${h.id}">
+              <div class="sub-tabs">
+                <button class="sub-tab-btn ${currentSubTab === 'note' ? 'active' : ''}" onclick="switchSubTab('${h.id}', 'note')">NOTE</button>
+                <button class="sub-tab-btn ${currentSubTab === 'todo' ? 'active' : ''}" onclick="switchSubTab('${h.id}', 'todo')">TODO LIST (${todoList.length})</button>
+              </div>
+
+              <div id="sub-content-note-${h.id}" style="${currentSubTab === 'note' ? 'display:block;' : 'display:none;'}">
+                <textarea class="memo-input" rows="2" placeholder="今日のメモ・目標を入力..." oninput="updateMemo('${h.id}', this.value)">${memoText}</textarea>
+              </div>
+
+              <div id="sub-content-todo-${h.id}" style="${currentSubTab === 'todo' ? 'display:block;' : 'display:none;'}">
+                <div class="todo-list">${todoItemsHtml}</div>
+                <div class="todo-add-box">
+                  <input type="text" class="todo-input" id="todo-input-${h.id}" placeholder="新しいタスクを追加..." onkeypress="if(event.key==='Enter') addTodo('${h.id}')">
+                  <button class="todo-add-btn" onclick="addTodo('${h.id}')">Add</button>
+                </div>
+              </div>
             </div>
           `;
           container.appendChild(wrapper);
@@ -408,7 +515,6 @@
       thead += '</tr></thead>';
 
       let tbody = '<tbody>';
-      
       const orderedActiveHabits = [];
       ['morning', 'afternoon', 'night'].forEach(t => {
         habits.filter(h => h.time === t && h.active).forEach(h => orderedActiveHabits.push(h));
@@ -519,7 +625,6 @@
     function deleteHabit(id) {
       const target = habits.find(h => h.id === id);
       if (!target) return;
-      
       if (confirm(`「${target.name}」を削除しますか？`)) {
         habits = habits.filter(h => h.id !== id);
         saveData();
@@ -573,7 +678,43 @@
       renderManageModal();
       renderToday();
       renderHeatmap();
-      alert('習慣を追加しました！');
+    }
+
+    // バックアップ機能
+    function exportData() {
+      const backup = { habits, logs, memos, todos, exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `HabitTracker_Backup_${getRealTodayKey()}.json`;
+      a.click();
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported.habits && imported.logs) {
+            habits = imported.habits;
+            logs = imported.logs;
+            memos = imported.memos || {};
+            todos = imported.todos || {};
+            saveData();
+            renderManageModal();
+            renderToday();
+            renderHeatmap();
+            alert('バックアップからデータを復元しました！');
+          } else {
+            alert('無効なバックアップファイルです。');
+          }
+        } catch (err) {
+          alert('ファイルの読み込みに失敗しました。');
+        }
+      };
+      reader.readAsText(file);
     }
 
     function openModal(id) {
@@ -582,17 +723,14 @@
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    // 画面外タップでパレットを閉じる
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.action-group')) {
         document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('show'));
       }
     });
 
-    // アプリがバックグラウンドから復帰した際に日付を再チェック
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
-        // 表示中の日付がリアル今日であれば再同期
         const isCurrentlyViewingToday = formatDateKey(selectedDate) === getRealTodayKey();
         if (isCurrentlyViewingToday) {
           selectedDate = new Date();
@@ -602,8 +740,7 @@
       }
     });
 
-    // 初期起動
-    loadData();
+    migrateAndLoadData();
     renderToday();
     renderHeatmap();
   </script>
