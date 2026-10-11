@@ -31,20 +31,36 @@
 
     .container { padding: 12px 14px; max-width: 600px; margin: 0 auto; width: 100%; }
     
+    /* 日付セレクターバー */
+    .date-bar { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 12px; margin-top: 6px; }
+    .date-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
+    .date-nav-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
+    .date-today-btn { background: transparent; border: 1px solid var(--afternoon); color: var(--afternoon); border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+
     .section-title { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; margin: 16px 0 8px; display: flex; align-items: center; gap: 6px; }
     .title-morning { color: var(--morning); }
     .title-afternoon { color: var(--afternoon); }
     .title-night { color: var(--night); }
     
     /* カード */
-    .habit-card { background: var(--card-bg); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; position: relative; }
-    .habit-info { flex: 1; min-width: 0; margin-right: 10px; }
-    .habit-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-container { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--card-border); overflow: hidden; transition: border-color 0.2s; }
+    .habit-card { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+    .habit-info { flex: 1; min-width: 0; margin-right: 10px; cursor: pointer; }
+    .habit-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
     .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
+    /* 隠しメモ行 */
+    .memo-section { display: none; padding: 0 14px 12px; border-top: 1px dashed var(--border); background: rgba(11, 15, 25, 0.4); }
+    .memo-section.show { display: block; }
+    .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; margin-top: 8px; }
+    .memo-input:focus { border-color: var(--afternoon); outline: none; }
+    .memo-tag { font-size: 0.65rem; color: var(--afternoon); font-weight: 700; margin-top: 6px; display: inline-block; }
+
     /* ボタン & カラーパレット */
-    .action-group { position: relative; display: flex; align-items: center; }
-    .check-btn { width: 40px; height: 40px; border-radius: 10px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; }
+    .action-group { position: relative; display: flex; align-items: center; gap: 6px; }
+    .memo-toggle-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.6; padding: 4px; }
+    .memo-toggle-btn.has-content { opacity: 1; }
+    .check-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; }
     .check-btn.checked { color: #fff; transform: scale(1.03); }
 
     .color-picker { display: none; position: absolute; right: 48px; background: #1a243b; border: 1px solid var(--card-border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
@@ -57,7 +73,8 @@
     .matrix-table { border-collapse: collapse; font-size: 0.72rem; width: max-content; }
     .matrix-table th, .matrix-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--card-border); }
     .matrix-table th { background: #1a243b; color: var(--text-sub); font-weight: 600; white-space: nowrap; }
-    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; max-width: 130px; min-width: 110px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .matrix-table th.today-col { background: #1e3a5f; color: var(--afternoon); }
+    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; max-width: 140px; min-width: 110px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .matrix-table th.sticky-col { background: #1a243b; z-index: 3; }
     .matrix-cell { width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: #0f1626; font-size: 0.65rem; }
     .matrix-cell.filled { color: #fff; font-weight: bold; }
@@ -73,11 +90,12 @@
     .manage-info { flex: 1; min-width: 0; }
     .manage-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    .reorder-btns { display: flex; gap: 4px; }
-    .reorder-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; }
-    .reorder-btn:disabled { opacity: 0.2; cursor: default; }
+    .btn-group { display: flex; gap: 4px; align-items: center; }
+    .small-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; }
+    .small-btn:disabled { opacity: 0.2; cursor: default; }
 
-    .delete-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; cursor: pointer; }
+    .edit-btn { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: var(--afternoon); }
+    .delete-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); font-size: 0.8rem; }
     
     .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -105,6 +123,16 @@
   </nav>
 
   <div class="container" id="view-today">
+    <!-- 日付バー -->
+    <div class="date-bar">
+      <button class="date-nav-btn" onclick="changeDate(-1)">◀ Prev</button>
+      <div style="text-align:center;">
+        <span class="date-label" id="current-date-label">Today</span>
+        <button class="date-today-btn" id="btn-jump-today" style="display:none; margin-left:6px;" onclick="jumpToRealToday()">Jump Today</button>
+      </div>
+      <button class="date-nav-btn" onclick="changeDate(1)">Next ▶</button>
+    </div>
+
     <div class="section-title title-morning">☀️ MORNING</div>
     <div id="list-morning"></div>
 
@@ -117,16 +145,17 @@
 
   <div class="container" id="view-stats" style="display: none;">
     <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (LAST 30 DAYS)</div>
+    <p style="font-size:0.7rem; color:var(--text-sub); margin-bottom:8px;">Blue column represents Today. Records persist automatically.</p>
     <div class="matrix-wrapper">
       <table class="matrix-table" id="matrix-table"></table>
     </div>
   </div>
 
-  <!-- 設定 & 並び替え・削除モーダル -->
+  <!-- 管理モーダル -->
   <div class="modal" id="manage-modal">
     <div class="modal-content">
       <div class="modal-title">Habits Management</div>
-      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Reorder (▲/▼), Toggle (Switch), or Delete (🗑️).</p>
+      <p style="font-size:0.72rem; color:var(--text-sub); margin-bottom:10px;">Reorder (▲/▼), Edit (✏️), Toggle (Switch), or Delete (🗑️).</p>
       
       <div id="manage-list"></div>
 
@@ -136,16 +165,34 @@
         <option value="afternoon">Afternoon</option>
         <option value="night">Night</option>
       </select>
-      <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name (e.g. Morning Stretch)">
-      <input type="text" class="input-box" id="new-habit-desc" placeholder="Details (e.g. Blue=Stretch, Pink=Run)">
+      <input type="text" class="input-box" id="new-habit-name" placeholder="Habit name">
+      <input type="text" class="input-box" id="new-habit-desc" placeholder="Details / Hint">
       <button class="btn btn-primary" onclick="addNewHabit()">Add Habit</button>
       <button class="btn btn-secondary" onclick="closeModal('manage-modal')">Close</button>
     </div>
   </div>
 
+  <!-- 編集モーダル -->
+  <div class="modal" id="edit-modal">
+    <div class="modal-content">
+      <div class="modal-title">Edit Habit</div>
+      <input type="hidden" id="edit-habit-id">
+      <select class="input-box" id="edit-habit-time">
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="night">Night</option>
+      </select>
+      <input type="text" class="input-box" id="edit-habit-name" placeholder="Habit name">
+      <input type="text" class="input-box" id="edit-habit-desc" placeholder="Details / Hint">
+      <button class="btn btn-primary" onclick="saveEditedHabit()">Update</button>
+      <button class="btn btn-secondary" onclick="closeModal('edit-modal')">Cancel</button>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY_HABITS = 'habit_tracker_master_v1';
-    const STORAGE_KEY_LOGS = 'habit_tracker_logs_v1';
+    const STORAGE_KEY_HABITS = 'habit_tracker_master_v3';
+    const STORAGE_KEY_LOGS   = 'habit_tracker_logs_v3';
+    const STORAGE_KEY_MEMOS  = 'habit_tracker_memos_v3';
 
     const COLORS = [
       { name: 'Emerald', code: '#10b981' },
@@ -157,22 +204,19 @@
     ];
 
     const DEFAULT_HABITS = [
-      // 朝
       { id: 'm1', time: 'morning', name: 'やる気に頼らない着手', desc: '5秒ルールで起床・即行動', active: false },
       { id: 'm2', time: 'morning', name: '起床直後の水分補給', desc: '起き抜けに水＋塩分補給', active: false },
       { id: 'm3', time: 'morning', name: '朝起きてすぐの光', desc: '外に出て朝日を浴び体内時計リセット', active: true },
       { id: 'm4', time: 'morning', name: '朝のゾーン2運動', desc: 'ストレッチ(青) / ランニング(ピンク)', active: true },
-      { id: 'm5', time: 'morning', name: '起床後90〜120分のカフェイン断ち', desc: '起きてすぐのコーヒーを控える', active: false },
-      { id: 'm6', time: 'morning', name: 'スマホの物理的隔離', desc: '作業前に電源OFFまたは別室へ', active: true },
-      { id: 'm7', time: 'morning', name: '朝一番のディープワーク', desc: '最重要タスクを朝イチで片付ける', active: false },
-      { id: 'm8', time: 'morning', name: '集中音源とタイムアタック', desc: 'ブラウンノイズ＋タイマー', active: false },
-      // 日中
+      { id: 'm5', time: 'morning', name: '今日の目標設定', desc: '朝一番にクリアな目標をセット', active: true },
+      { id: 'm6', time: 'morning', name: '起床後90〜120分のカフェイン断ち', desc: '起きてすぐのコーヒーを控える', active: false },
+      { id: 'm7', time: 'morning', name: 'スマホの物理的隔離', desc: '作業前に電源OFFまたは別室へ', active: true },
+      { id: 'm8', time: 'morning', name: '朝一番のディープワーク', desc: '最重要タスクを朝イチで片付ける', active: false },
       { id: 'a1', time: 'afternoon', name: 'オン・オフのメリハリ', desc: '瞑想またはNSDRで脳を回復', active: false },
       { id: 'a2', time: 'afternoon', name: '世界一ご機嫌な人のふり', desc: '外側の振る舞いで内面を変える', active: false },
       { id: 'a3', time: 'afternoon', name: '血糖値スパイクの防止', desc: '眠気・倦怠感を防ぐ昼食管理', active: false },
       { id: 'a4', time: 'afternoon', name: '思考の紙への書き出し', desc: '不安・モヤモヤを書き殴る', active: false },
       { id: 'a5', time: 'afternoon', name: '短期的な快楽の抑制', desc: 'ジャンクフード・無駄なSNS遮断', active: false },
-      // 夜
       { id: 'n1', time: 'night', name: '就寝前のコンディショニング', desc: '寝る3時間前断食・暖色照明', active: false },
       { id: 'n2', time: 'night', name: '就寝90分前の入浴', desc: '40度の湯船で深部体温調整', active: false },
       { id: 'n3', time: 'night', name: '夜5分のジャーナリング', desc: 'KPT法で1日を振り返る', active: true },
@@ -182,6 +226,23 @@
 
     let habits = [];
     let logs = {};
+    let memos = {};
+    let selectedDate = new Date(); // 画面で操作中の日付
+
+    function formatDateKey(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    function getRealTodayKey() {
+      return formatDateKey(new Date());
+    }
+
+    function getSelectedDateKey() {
+      return formatDateKey(selectedDate);
+    }
 
     function loadData() {
       try {
@@ -189,10 +250,12 @@
         habits = storedHabits ? JSON.parse(storedHabits) : DEFAULT_HABITS;
         const storedLogs = localStorage.getItem(STORAGE_KEY_LOGS);
         logs = storedLogs ? JSON.parse(storedLogs) : {};
+        const storedMemos = localStorage.getItem(STORAGE_KEY_MEMOS);
+        memos = storedMemos ? JSON.parse(storedMemos) : {};
       } catch (e) {
-        console.error("Storage load failed, using defaults", e);
         habits = DEFAULT_HABITS;
         logs = {};
+        memos = {};
       }
     }
 
@@ -200,28 +263,45 @@
       try {
         localStorage.setItem(STORAGE_KEY_HABITS, JSON.stringify(habits));
         localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs));
+        localStorage.setItem(STORAGE_KEY_MEMOS, JSON.stringify(memos));
       } catch (e) {
-        console.error("Storage save failed", e);
+        console.error("Storage error:", e);
       }
     }
 
-    function getTodayKey() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    function updateDateLabel() {
+      const isToday = getSelectedDateKey() === getRealTodayKey();
+      const d = selectedDate;
+      const label = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}` + (isToday ? ' (Today)' : '');
+      document.getElementById('current-date-label').innerText = label;
+      document.getElementById('btn-jump-today').style.display = isToday ? 'none' : 'inline-block';
+    }
+
+    function changeDate(delta) {
+      selectedDate.setDate(selectedDate.getDate() + delta);
+      renderToday();
+      renderHeatmap();
+    }
+
+    function jumpToRealToday() {
+      selectedDate = new Date();
+      renderToday();
+      renderHeatmap();
     }
 
     function setHabitColor(habitId, color) {
-      const today = getTodayKey();
-      if (!logs[today]) logs[today] = {};
+      const dateKey = getSelectedDateKey();
+      if (!logs[dateKey]) logs[dateKey] = {};
       
-      if (logs[today][habitId] === color) {
-        delete logs[today][habitId];
+      if (logs[dateKey][habitId] === color) {
+        delete logs[dateKey][habitId];
       } else {
-        logs[today][habitId] = color;
+        logs[dateKey][habitId] = color;
       }
       
       saveData();
       renderToday();
+      renderHeatmap();
     }
 
     function togglePicker(habitId) {
@@ -232,9 +312,23 @@
       if (picker) picker.classList.toggle('show');
     }
 
+    function toggleMemo(habitId) {
+      const el = document.getElementById(`memo-section-${habitId}`);
+      if (el) el.classList.toggle('show');
+    }
+
+    function updateMemo(habitId, val) {
+      const dateKey = getSelectedDateKey();
+      if (!memos[dateKey]) memos[dateKey] = {};
+      memos[dateKey][habitId] = val;
+      saveData();
+    }
+
     function renderToday() {
-      const today = getTodayKey();
-      const todayLogs = logs[today] || {};
+      updateDateLabel();
+      const dateKey = getSelectedDateKey();
+      const dayLogs = logs[dateKey] || {};
+      const dayMemos = memos[dateKey] || {};
 
       ['morning', 'afternoon', 'night'].forEach(time => {
         const container = document.getElementById(`list-${time}`);
@@ -247,33 +341,47 @@
         }
 
         list.forEach(h => {
-          const activeColor = todayLogs[h.id] || null;
+          const activeColor = dayLogs[h.id] || null;
           const isDone = !!activeColor;
-          const div = document.createElement('div');
-          div.className = 'habit-card';
+          const memoText = dayMemos[h.id] || '';
+          
+          const wrapper = document.createElement('div');
+          wrapper.className = 'habit-container';
 
           let pickerDots = COLORS.map(c => 
             `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
           ).join('');
 
-          div.innerHTML = `
-            <div class="habit-info">
-              <div class="habit-name">${h.name}</div>
-              <div class="habit-desc">${h.desc}</div>
-            </div>
-            <div class="action-group">
-              <div class="color-picker" id="picker-${h.id}">
-                ${pickerDots}
+          wrapper.innerHTML = `
+            <div class="habit-card">
+              <div class="habit-info" onclick="toggleMemo('${h.id}')">
+                <div class="habit-name">
+                  ${h.name}
+                  <span style="font-size:0.7rem; opacity:0.6;">${memoText ? '📝' : '▾'}</span>
+                </div>
+                <div class="habit-desc">${h.desc}</div>
               </div>
-              <button 
-                class="check-btn ${isDone ? 'checked' : ''}" 
-                style="${isDone ? `background:${activeColor}; border-color:${activeColor};` : ''}"
-                onclick="togglePicker('${h.id}')">
-                ✓
-              </button>
+              <div class="action-group">
+                <button class="memo-toggle-btn ${memoText ? 'has-content' : ''}" onclick="toggleMemo('${h.id}')" title="Note/Goal">
+                  ✏️
+                </button>
+                <div class="color-picker" id="picker-${h.id}">
+                  ${pickerDots}
+                </div>
+                <button 
+                  class="check-btn ${isDone ? 'checked' : ''}" 
+                  style="${isDone ? `background:${activeColor}; border-color:${activeColor};` : ''}"
+                  onclick="togglePicker('${h.id}')">
+                  ✓
+                </button>
+              </div>
+            </div>
+            <div class="memo-section ${memoText ? 'show' : ''}" id="memo-section-${h.id}">
+              <span class="memo-tag">NOTE / GOAL (${dateKey})</span>
+              <textarea class="memo-input" rows="2" placeholder="今日の具体的な目標やメモを入力..." oninput="updateMemo('${h.id}', this.value)">${memoText}</textarea>
             </div>
           `;
-          container.appendChild(div);
+          container.appendChild(wrapper);
         });
       });
     }
@@ -283,22 +391,30 @@
       table.innerHTML = '';
 
       const days = [];
-      const today = new Date();
+      const now = new Date();
+      const realTodayKey = getRealTodayKey();
+
       for (let i = 29; i >= 0; i--) {
         const d = new Date();
-        d.setDate(today.getDate() - i);
-        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        days.push({ key, label: `${d.getMonth()+1}/${d.getDate()}` });
+        d.setDate(now.getDate() - i);
+        const key = formatDateKey(d);
+        days.push({ key, label: `${d.getMonth()+1}/${d.getDate()}`, isToday: key === realTodayKey });
       }
 
       let thead = '<thead><tr><th class="sticky-col">Habit</th>';
-      days.forEach(day => { thead += `<th>${day.label}</th>`; });
+      days.forEach(day => {
+        thead += `<th class="${day.isToday ? 'today-col' : ''}">${day.label}</th>`;
+      });
       thead += '</tr></thead>';
 
       let tbody = '<tbody>';
-      const activeHabits = habits.filter(h => h.active);
+      
+      const orderedActiveHabits = [];
+      ['morning', 'afternoon', 'night'].forEach(t => {
+        habits.filter(h => h.time === t && h.active).forEach(h => orderedActiveHabits.push(h));
+      });
 
-      activeHabits.forEach(h => {
+      orderedActiveHabits.forEach(h => {
         let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
         tbody += `<tr><td class="sticky-col" style="color:${timeColor}" title="${h.name}">${h.name}</td>`;
         days.forEach(day => {
@@ -347,15 +463,16 @@
             <div class="manage-info">
               <div class="manage-name">${h.name}</div>
             </div>
-            <div class="reorder-btns">
-              <button class="reorder-btn" ${index === 0 ? 'disabled' : ''} onclick="moveHabit('${h.id}', -1)">▲</button>
-              <button class="reorder-btn" ${index === timeHabits.length - 1 ? 'disabled' : ''} onclick="moveHabit('${h.id}', 1)">▼</button>
+            <div class="btn-group">
+              <button class="small-btn" ${index === 0 ? 'disabled' : ''} onclick="moveHabit('${h.id}', -1)">▲</button>
+              <button class="small-btn" ${index === timeHabits.length - 1 ? 'disabled' : ''} onclick="moveHabit('${h.id}', 1)">▼</button>
+              <button class="small-btn edit-btn" onclick="openEditModal('${h.id}')" title="Edit">✏️</button>
+              <label class="switch">
+                <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
+                <span class="slider"></span>
+              </label>
+              <button class="small-btn delete-btn" onclick="deleteHabit('${h.id}')" title="Delete">🗑️</button>
             </div>
-            <label class="switch">
-              <input type="checkbox" ${h.active ? 'checked' : ''} onchange="toggleActive('${h.id}')">
-              <span class="slider"></span>
-            </label>
-            <button class="delete-btn" onclick="deleteHabit('${h.id}')" title="Delete">🗑️</button>
           `;
           container.appendChild(div);
         });
@@ -385,6 +502,7 @@
         saveData();
         renderManageModal();
         renderToday();
+        renderHeatmap();
       }
     }
 
@@ -394,6 +512,7 @@
         target.active = !target.active;
         saveData();
         renderToday();
+        renderHeatmap();
       }
     }
 
@@ -401,11 +520,42 @@
       const target = habits.find(h => h.id === id);
       if (!target) return;
       
-      if (confirm(`「${target.name}」を削除しますか？\n（過去の塗りつぶし記録からも非表示になります）`)) {
+      if (confirm(`「${target.name}」を削除しますか？`)) {
         habits = habits.filter(h => h.id !== id);
         saveData();
         renderManageModal();
         renderToday();
+        renderHeatmap();
+      }
+    }
+
+    function openEditModal(id) {
+      const target = habits.find(h => h.id === id);
+      if (!target) return;
+      document.getElementById('edit-habit-id').value = target.id;
+      document.getElementById('edit-habit-time').value = target.time;
+      document.getElementById('edit-habit-name').value = target.name;
+      document.getElementById('edit-habit-desc').value = target.desc || '';
+      openModal('edit-modal');
+    }
+
+    function saveEditedHabit() {
+      const id = document.getElementById('edit-habit-id').value;
+      const time = document.getElementById('edit-habit-time').value;
+      const name = document.getElementById('edit-habit-name').value.trim();
+      const desc = document.getElementById('edit-habit-desc').value.trim();
+      if (!name) return alert('習慣名を入力してください');
+
+      const target = habits.find(h => h.id === id);
+      if (target) {
+        target.time = time;
+        target.name = name;
+        target.desc = desc;
+        saveData();
+        renderManageModal();
+        renderToday();
+        renderHeatmap();
+        closeModal('edit-modal');
       }
     }
 
@@ -422,7 +572,8 @@
       document.getElementById('new-habit-desc').value = '';
       renderManageModal();
       renderToday();
-      alert('習慣を追加し、保存しました！');
+      renderHeatmap();
+      alert('習慣を追加しました！');
     }
 
     function openModal(id) {
@@ -431,15 +582,30 @@
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+    // 画面外タップでパレットを閉じる
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.action-group')) {
         document.querySelectorAll('.color-picker').forEach(p => p.classList.remove('show'));
       }
     });
 
-    // 起動時にデータ読み込み＆表示
+    // アプリがバックグラウンドから復帰した際に日付を再チェック
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        // 表示中の日付がリアル今日であれば再同期
+        const isCurrentlyViewingToday = formatDateKey(selectedDate) === getRealTodayKey();
+        if (isCurrentlyViewingToday) {
+          selectedDate = new Date();
+          renderToday();
+          renderHeatmap();
+        }
+      }
+    });
+
+    // 初期起動
     loadData();
     renderToday();
+    renderHeatmap();
   </script>
 </body>
 </html>
