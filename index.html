@@ -7,94 +7,113 @@
   <style>
     :root {
       --bg: #0b0f19;
-      --card-bg: #151d30;
-      --card-border: #232f48;
       --text: #f8fafc;
-      --text-sub: #8292ab;
-      --morning: #f59e0b;
-      --afternoon: #38bdf8;
-      --night: #a855f7;
+      --text-sub: #94a3b8;
       --danger: #ef4444;
       --border: #222f46;
+
+      /* 朝（パステルアンバー調） */
+      --morning-text: #fde68a;
+      --morning-bg: #1c1810;
+      --morning-border: #423218;
+
+      /* 昼（パステルブルー調） */
+      --afternoon-text: #bae6fd;
+      --afternoon-bg: #101a2b;
+      --afternoon-border: #1e3557;
+
+      /* 夜（パステルラベンダー調） */
+      --night-text: #e9d5ff;
+      --night-bg: #1b1429;
+      --night-border: #3b2857;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     html, body { width: 100%; overflow-x: hidden; background-color: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
     body { padding-bottom: 80px; }
     
-    header { padding: 14px 16px; background: rgba(21, 29, 48, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; }
+    header { padding: 14px 16px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; }
     h1 { font-size: 1.05rem; font-weight: 800; letter-spacing: 0.08em; color: #fff; }
     .btn-icon { background: none; border: none; color: var(--text-sub); font-size: 1.25rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
 
-    .nav-tabs { display: flex; background: var(--card-bg); border-bottom: 1px solid var(--border); width: 100%; }
+    .nav-tabs { display: flex; background: #131b2e; border-bottom: 1px solid var(--border); width: 100%; }
     .nav-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 0.85rem; color: var(--text-sub); font-weight: 700; letter-spacing: 0.05em; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-    .nav-tab.active { color: #fff; border-color: var(--afternoon); }
+    .nav-tab.active { color: #fff; border-color: #38bdf8; }
 
     .container { padding: 12px 14px; max-width: 600px; margin: 0 auto; width: 100%; }
     
     /* 日付バー */
-    .date-bar { display: flex; align-items: center; justify-content: space-between; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 12px; margin-top: 6px; }
+    .date-bar { display: flex; align-items: center; justify-content: space-between; background: #151d30; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; margin-top: 6px; }
     .date-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
-    .date-nav-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
-    .date-today-btn { background: transparent; border: 1px solid var(--afternoon); color: var(--afternoon); border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
+    .date-nav-btn { background: #1f2b45; border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
+    .date-today-btn { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
 
-    .section-title { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; margin: 16px 0 8px; display: flex; align-items: center; gap: 6px; }
-    .title-morning { color: var(--morning); }
-    .title-afternoon { color: var(--afternoon); }
-    .title-night { color: var(--night); }
+    .section-title { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em; margin: 20px 0 8px; display: flex; align-items: center; gap: 6px; }
+    .title-morning { color: var(--morning-text); }
+    .title-afternoon { color: var(--afternoon-text); }
+    .title-night { color: var(--night-text); }
     
-    /* カード */
-    .habit-container { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--card-border); overflow: hidden; }
+    /* カード（時間帯ごとのパステル背景） */
+    .habit-container { border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: all 0.2s; }
+    .habit-container.morning { background: var(--morning-bg); border: 1px solid var(--morning-border); }
+    .habit-container.afternoon { background: var(--afternoon-bg); border: 1px solid var(--afternoon-border); }
+    .habit-container.night { background: var(--night-bg); border: 1px solid var(--night-border); }
+
     .habit-card { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: relative; }
     .habit-info { flex: 1; min-width: 0; margin-right: 10px; cursor: pointer; }
-    .habit-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
-    .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-name { font-size: 0.92rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+    .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
     /* サブ入力（Note / Todo） */
-    .sub-panel { display: none; padding: 10px 14px 12px; border-top: 1px dashed var(--border); background: rgba(11, 15, 25, 0.5); }
+    .sub-panel { display: none; padding: 10px 14px 12px; border-top: 1px dashed rgba(255,255,255,0.1); background: rgba(0, 0, 0, 0.25); }
     .sub-panel.show { display: block; }
     .sub-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
-    .sub-tab-btn { background: #1a243b; border: 1px solid var(--card-border); color: var(--text-sub); padding: 3px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; cursor: pointer; }
-    .sub-tab-btn.active { background: var(--afternoon); color: var(--bg); border-color: var(--afternoon); }
+    .sub-tab-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: var(--text-sub); padding: 4px 10px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; cursor: pointer; }
+    .sub-tab-btn.active { background: #38bdf8; color: #0b0f19; border-color: #38bdf8; }
 
-    .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; }
-    .memo-input:focus { border-color: var(--afternoon); outline: none; }
+    .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; }
+    .memo-input:focus { border-color: #38bdf8; outline: none; }
 
     /* TODOリスト */
     .todo-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; background: var(--bg); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); }
-    .todo-item.done { text-decoration: line-through; opacity: 0.5; }
+    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; background: rgba(0,0,0,0.35); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
+    .todo-item.done .todo-text { text-decoration: line-through; opacity: 0.5; }
     .todo-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-    .todo-del { background: none; border: none; color: var(--danger); font-size: 0.75rem; cursor: pointer; margin-left: auto; }
-    .todo-add-box { display: flex; gap: 6px; }
-    .todo-input { flex: 1; padding: 6px 8px; font-size: 0.78rem; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
-    .todo-add-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); padding: 0 10px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; }
+    .todo-text { flex: 1; cursor: pointer; }
+    .todo-edit-input { flex: 1; background: #000; border: 1px solid #38bdf8; color: #fff; padding: 4px 6px; font-size: 0.8rem; border-radius: 4px; }
+    .todo-btn-icon { background: none; border: none; font-size: 0.8rem; cursor: pointer; padding: 2px 4px; opacity: 0.7; }
+    .todo-btn-icon:hover { opacity: 1; }
+    .todo-del { color: var(--danger); margin-left: 4px; }
+    
+    .todo-add-box { display: flex; gap: 6px; margin-top: 4px; }
+    .todo-input { flex: 1; padding: 6px 10px; font-size: 0.78rem; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+    .todo-add-btn { background: #1e293b; border: 1px solid var(--border); color: var(--text); padding: 0 12px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; }
 
-    /* ボタン & カラーパレット */
+    /* アクションボタン & カラーピッカー */
     .action-group { position: relative; display: flex; align-items: center; gap: 6px; }
-    .memo-toggle-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.6; padding: 4px; }
+    .memo-toggle-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.5; padding: 4px; }
     .memo-toggle-btn.has-content { opacity: 1; }
-    .check-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid var(--card-border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; }
+    .check-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.15); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; }
     .check-btn.checked { color: #fff; transform: scale(1.03); }
 
-    .color-picker { display: none; position: absolute; right: 48px; background: #1a243b; border: 1px solid var(--card-border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
+    .color-picker { display: none; position: absolute; right: 48px; background: #151d30; border: 1px solid var(--border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
     .color-picker.show { display: flex; }
     .color-dot { width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; transition: transform 0.1s; }
 
     /* ヒートマップ */
-    .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--card-border); border-radius: 10px; background: var(--card-bg); margin-top: 10px; }
+    .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 10px; background: #131b2e; margin-top: 10px; }
     .matrix-table { border-collapse: collapse; font-size: 0.72rem; width: max-content; }
-    .matrix-table th, .matrix-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--card-border); }
+    .matrix-table th, .matrix-table td { padding: 6px 8px; text-align: center; border: 1px solid var(--border); }
     .matrix-table th { background: #1a243b; color: var(--text-sub); font-weight: 600; white-space: nowrap; }
-    .matrix-table th.today-col { background: #1e3a5f; color: var(--afternoon); }
-    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: var(--card-bg); z-index: 2; text-align: left; max-width: 140px; min-width: 110px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .matrix-table th.today-col { background: #1e3a5f; color: #38bdf8; font-weight: 800; border-bottom: 2px solid #38bdf8; }
+    .matrix-table th.sticky-col, .matrix-table td.sticky-col { position: sticky; left: 0; background: #131b2e; z-index: 2; text-align: left; max-width: 140px; min-width: 110px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .matrix-table th.sticky-col { background: #1a243b; z-index: 3; }
-    .matrix-cell { width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: #0f1626; font-size: 0.65rem; }
+    .matrix-cell { width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: #0b0f19; font-size: 0.65rem; }
     .matrix-cell.filled { color: #fff; font-weight: bold; }
 
     /* モーダル */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; padding: 12px; backdrop-filter: blur(4px); }
     .modal.active { display: flex; }
-    .modal-content { background: var(--card-bg); border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--card-border); }
+    .modal-content { background: #151d30; border-radius: 14px; padding: 18px 16px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); }
     .modal-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
     
     .manage-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; gap: 6px; }
@@ -102,23 +121,23 @@
     .manage-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
     .btn-group { display: flex; gap: 4px; align-items: center; }
-    .small-btn { background: #1f2b45; border: 1px solid var(--card-border); color: var(--text); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; }
+    .small-btn { background: #1f2b45; border: 1px solid var(--border); color: var(--text); border-radius: 6px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; }
     .small-btn:disabled { opacity: 0.2; cursor: default; }
 
-    .edit-btn { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: var(--afternoon); }
+    .edit-btn { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; }
     .delete-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: var(--danger); font-size: 0.8rem; }
     
     .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border); border-radius: 22px; transition: .2s; }
     .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .2s; }
-    input:checked + .slider { background-color: var(--afternoon); }
+    input:checked + .slider { background-color: #38bdf8; }
     input:checked + .slider:before { transform: translateX(16px); }
 
-    .input-box { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text); font-size: 0.85rem; margin-top: 8px; }
+    .input-box { width: 100%; padding: 10px; background: #0b0f19; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.85rem; margin-top: 8px; }
     .btn { width: 100%; padding: 11px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.85rem; }
-    .btn-primary { background: var(--afternoon); color: var(--bg); }
-    .btn-secondary { background: var(--card-border); color: var(--text); margin-top: 6px; }
+    .btn-primary { background: #38bdf8; color: #0b0f19; }
+    .btn-secondary { background: #1f2b45; color: var(--text); margin-top: 6px; }
     .backup-zone { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
   </style>
 </head>
@@ -155,7 +174,8 @@
   </div>
 
   <div class="container" id="view-stats" style="display: none;">
-    <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (LAST 30 DAYS)</div>
+    <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (NEWEST FIRST)</div>
+    <p style="font-size:0.7rem; color:var(--text-sub); margin-bottom:8px;">Leftmost column is Today. Scroll right for past records.</p>
     <div class="matrix-wrapper">
       <table class="matrix-table" id="matrix-table"></table>
     </div>
@@ -206,7 +226,6 @@
   </div>
 
   <script>
-    // 永久固定のマスターキー
     const KEY_HABITS = 'HT_MASTER_HABITS';
     const KEY_LOGS   = 'HT_MASTER_LOGS';
     const KEY_MEMOS  = 'HT_MASTER_MEMOS';
@@ -245,8 +264,9 @@
     let habits = [];
     let logs = {};
     let memos = {};
-    let todos = {}; // { "YYYY-MM-DD": { "habit_id": [ { id, text, done } ] } }
-    let subTabState = {}; // { "habit_id": "note" | "todo" }
+    let todos = {};
+    let subTabState = {};
+    let editingTodoId = null; // 現在インライン編集中のTODO ID
     let selectedDate = new Date();
 
     function formatDateKey(d) {
@@ -259,7 +279,6 @@
     function getRealTodayKey() { return formatDateKey(new Date()); }
     function getSelectedDateKey() { return formatDateKey(selectedDate); }
 
-    // 過去バージョン（v1, v2, v3）からの安全な自動マイグレーション
     function migrateAndLoadData() {
       try {
         let savedHabits = localStorage.getItem(KEY_HABITS);
@@ -290,9 +309,8 @@
         let savedTodos = localStorage.getItem(KEY_TODOS);
         todos = savedTodos ? JSON.parse(savedTodos) : {};
 
-        saveData(); // 新しいキーに統合保存
+        saveData();
       } catch (e) {
-        console.error("Migration error:", e);
         habits = DEFAULT_HABITS;
         logs = {}; memos = {}; todos = {};
       }
@@ -403,6 +421,35 @@
       }
     }
 
+    function startEditTodo(todoId) {
+      editingTodoId = todoId;
+      renderToday();
+      setTimeout(() => {
+        const input = document.getElementById(`edit-todo-input-${todoId}`);
+        if (input) { input.focus(); input.select(); }
+      }, 50);
+    }
+
+    function saveTodoEdit(habitId, todoId) {
+      const input = document.getElementById(`edit-todo-input-${todoId}`);
+      if (!input) return;
+      const newText = input.value.trim();
+      const dateKey = getSelectedDateKey();
+      const list = todos[dateKey]?.[habitId] || [];
+      const item = list.find(t => t.id === todoId);
+      if (item && newText) {
+        item.text = newText;
+        saveData();
+      }
+      editingTodoId = null;
+      renderToday();
+    }
+
+    function cancelTodoEdit() {
+      editingTodoId = null;
+      renderToday();
+    }
+
     function renderToday() {
       updateDateLabel();
       const dateKey = getSelectedDateKey();
@@ -429,20 +476,33 @@
           const hasSubContent = memoText.trim() !== '' || todoList.length > 0;
 
           const wrapper = document.createElement('div');
-          wrapper.className = 'habit-container';
+          wrapper.className = `habit-container ${h.time}`;
 
           let pickerDots = COLORS.map(c => 
             `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
           ).join('');
 
-          // TODO Items HTML
-          let todoItemsHtml = todoList.map(t => `
-            <div class="todo-item ${t.done ? 'done' : ''}">
-              <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${h.id}', '${t.id}')">
-              <span>${t.text}</span>
-              <button class="todo-del" onclick="deleteTodo('${h.id}', '${t.id}')">✕</button>
-            </div>
-          `).join('');
+          // TODOリストの生成（インライン編集対応）
+          let todoItemsHtml = todoList.map(t => {
+            if (editingTodoId === t.id) {
+              return `
+                <div class="todo-item">
+                  <input type="text" class="todo-edit-input" id="edit-todo-input-${t.id}" value="${t.text}" onkeypress="if(event.key==='Enter') saveTodoEdit('${h.id}', '${t.id}')">
+                  <button class="todo-btn-icon" onclick="saveTodoEdit('${h.id}', '${t.id}')" title="Save">✓</button>
+                  <button class="todo-btn-icon" onclick="cancelTodoEdit()" title="Cancel">✕</button>
+                </div>
+              `;
+            } else {
+              return `
+                <div class="todo-item ${t.done ? 'done' : ''}">
+                  <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${h.id}', '${t.id}')">
+                  <span class="todo-text" onclick="startEditTodo('${t.id}')" title="Click to edit">${t.text}</span>
+                  <button class="todo-btn-icon" onclick="startEditTodo('${t.id}')" title="Edit">✏️</button>
+                  <button class="todo-btn-icon todo-del" onclick="deleteTodo('${h.id}', '${t.id}')" title="Delete">✕</button>
+                </div>
+              `;
+            }
+          }).join('');
 
           wrapper.innerHTML = `
             <div class="habit-card">
@@ -493,6 +553,7 @@
       });
     }
 
+    /* ヒートマップ：左端を「今日」にして新しい順に並べる */
     function renderHeatmap() {
       const table = document.getElementById('matrix-table');
       table.innerHTML = '';
@@ -501,11 +562,16 @@
       const now = new Date();
       const realTodayKey = getRealTodayKey();
 
-      for (let i = 29; i >= 0; i--) {
+      // i = 0（今日）から 29（30日前）の順で追加することで左端を最新にする
+      for (let i = 0; i < 30; i++) {
         const d = new Date();
         d.setDate(now.getDate() - i);
         const key = formatDateKey(d);
-        days.push({ key, label: `${d.getMonth()+1}/${d.getDate()}`, isToday: key === realTodayKey });
+        days.push({ 
+          key, 
+          label: (i === 0) ? 'Today' : `${d.getMonth()+1}/${d.getDate()}`, 
+          isToday: key === realTodayKey 
+        });
       }
 
       let thead = '<thead><tr><th class="sticky-col">Habit</th>';
@@ -521,7 +587,7 @@
       });
 
       orderedActiveHabits.forEach(h => {
-        let timeColor = h.time === 'morning' ? 'var(--morning)' : h.time === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
+        let timeColor = h.time === 'morning' ? 'var(--morning-text)' : h.time === 'afternoon' ? 'var(--afternoon-text)' : 'var(--night-text)';
         tbody += `<tr><td class="sticky-col" style="color:${timeColor}" title="${h.name}">${h.name}</td>`;
         days.forEach(day => {
           const dayLog = logs[day.key] || {};
@@ -555,7 +621,7 @@
       ['morning', 'afternoon', 'night'].forEach(t => {
         const timeHabits = habits.filter(h => h.time === t);
         const timeLabel = t === 'morning' ? 'Morning' : t === 'afternoon' ? 'Afternoon' : 'Night';
-        const timeColor = t === 'morning' ? 'var(--morning)' : t === 'afternoon' ? 'var(--afternoon)' : 'var(--night)';
+        const timeColor = t === 'morning' ? 'var(--morning-text)' : t === 'afternoon' ? 'var(--afternoon-text)' : 'var(--night-text)';
         
         const headerDiv = document.createElement('div');
         headerDiv.style.cssText = `font-size:0.75rem; font-weight:800; color:${timeColor}; margin:12px 0 4px;`;
@@ -680,7 +746,6 @@
       renderHeatmap();
     }
 
-    // バックアップ機能
     function exportData() {
       const backup = { habits, logs, memos, todos, exportedAt: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
