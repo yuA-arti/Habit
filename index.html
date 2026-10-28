@@ -27,6 +27,10 @@
       --night-text: #7e22ce;
       --night-bg: #faf5ff;
       --night-border: #e9d5ff;
+
+      /* TODO独立エリア */
+      --todo-bg: #f1f5f9;
+      --todo-border: #cbd5e1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     html, body { width: 100%; overflow-x: hidden; background-color: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
@@ -48,12 +52,35 @@
     .date-nav-btn { background: #f1f5f9; border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; }
     .date-today-btn { background: transparent; border: 1px solid #0284c7; color: #0284c7; border-radius: 6px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; font-weight: 600; }
 
+    /* 独立TODOセクション */
+    .todo-panel { background: #ffffff; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-top: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    .todo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .todo-title { font-size: 0.85rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px; }
+    .todo-badge { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; background: #e0f2fe; color: #0284c7; }
+    .todo-progress-bg { width: 100%; height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+    .todo-progress-fill { height: 100%; background: #10b981; width: 0%; transition: width 0.3s; }
+    
+    .todo-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); }
+    .todo-item.done .todo-text { text-decoration: line-through; opacity: 0.5; color: var(--text-sub); }
+    .todo-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    .todo-text { flex: 1; cursor: pointer; }
+    .todo-edit-input { flex: 1; background: #ffffff; border: 1px solid #0284c7; color: #0f172a; padding: 4px 6px; font-size: 0.82rem; border-radius: 4px; }
+    .todo-btn-icon { background: none; border: none; font-size: 0.8rem; cursor: pointer; padding: 2px 4px; opacity: 0.6; }
+    .todo-btn-icon:hover { opacity: 1; }
+    .todo-del { color: var(--danger); margin-left: 4px; }
+    
+    .todo-add-box { display: flex; gap: 6px; }
+    .todo-input { flex: 1; padding: 8px 10px; font-size: 0.8rem; background: #ffffff; border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
+    .todo-add-btn { background: #0284c7; border: none; color: #ffffff; padding: 0 14px; font-size: 0.78rem; border-radius: 6px; cursor: pointer; font-weight: 700; }
+
+    /* セクションタイトル */
     .section-title { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.1em; margin: 20px 0 8px; display: flex; align-items: center; gap: 6px; }
     .title-morning { color: var(--morning-text); }
     .title-afternoon { color: var(--afternoon-text); }
     .title-night { color: var(--night-text); }
     
-    /* カード（パステルトーン） */
+    /* 習慣カード */
     .habit-container { border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
     .habit-container.morning { background: var(--morning-bg); border: 1px solid var(--morning-border); }
     .habit-container.afternoon { background: var(--afternoon-bg); border: 1px solid var(--afternoon-border); }
@@ -64,41 +91,23 @@
     .habit-name { font-size: 0.92rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
     .habit-desc { font-size: 0.72rem; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     
-    /* サブ入力（Note / Todo） */
+    /* サブメモ入力 */
     .sub-panel { display: none; padding: 10px 14px 12px; border-top: 1px dashed rgba(0,0,0,0.1); background: rgba(255, 255, 255, 0.6); }
     .sub-panel.show { display: block; }
-    .sub-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
-    .sub-tab-btn { background: #ffffff; border: 1px solid var(--border); color: var(--text-sub); padding: 4px 10px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; cursor: pointer; }
-    .sub-tab-btn.active { background: #0284c7; color: #ffffff; border-color: #0284c7; }
-
+    .memo-tag { font-size: 0.68rem; font-weight: 800; color: #0284c7; letter-spacing: 0.05em; display: inline-block; margin-bottom: 4px; }
     .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; background: #ffffff; border: 1px solid var(--border); border-radius: 6px; color: var(--text); resize: none; }
     .memo-input:focus { border-color: #0284c7; outline: none; }
 
-    /* TODOリスト */
-    .todo-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-    .todo-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; background: #ffffff; padding: 7px 10px; border-radius: 6px; border: 1px solid var(--border); }
-    .todo-item.done .todo-text { text-decoration: line-through; opacity: 0.5; color: var(--text-sub); }
-    .todo-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-    .todo-text { flex: 1; cursor: pointer; }
-    .todo-edit-input { flex: 1; background: #ffffff; border: 1px solid #0284c7; color: #0f172a; padding: 4px 6px; font-size: 0.8rem; border-radius: 4px; }
-    .todo-btn-icon { background: none; border: none; font-size: 0.8rem; cursor: pointer; padding: 2px 4px; opacity: 0.7; }
-    .todo-btn-icon:hover { opacity: 1; }
-    .todo-del { color: var(--danger); margin-left: 4px; }
-    
-    .todo-add-box { display: flex; gap: 6px; margin-top: 4px; }
-    .todo-input { flex: 1; padding: 6px 10px; font-size: 0.78rem; background: #ffffff; border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
-    .todo-add-btn { background: #f1f5f9; border: 1px solid var(--border); color: var(--text); padding: 0 12px; font-size: 0.75rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
-
-    /* アクションボタン & カラーピッカー */
+    /* アクションボタン & カラーピッカー（3色のみ） */
     .action-group { position: relative; display: flex; align-items: center; gap: 6px; }
-    .memo-toggle-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.5; padding: 4px; }
+    .memo-toggle-btn { background: none; border: none; font-size: 0.85rem; cursor: pointer; opacity: 0.4; padding: 4px; }
     .memo-toggle-btn.has-content { opacity: 1; }
     .check-btn { width: 38px; height: 38px; border-radius: 10px; border: 2px solid #cbd5e1; background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: transparent; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
     .check-btn.checked { color: #fff; transform: scale(1.03); }
 
-    .color-picker { display: none; position: absolute; right: 48px; background: #ffffff; border: 1px solid var(--border); padding: 6px 8px; border-radius: 10px; gap: 6px; z-index: 30; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .color-picker { display: none; position: absolute; right: 48px; background: #ffffff; border: 1px solid var(--border); padding: 6px 8px; border-radius: 10px; gap: 8px; z-index: 30; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
     .color-picker.show { display: flex; }
-    .color-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.1s; }
+    .color-dot { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.1s; }
 
     /* ヒートマップ */
     .matrix-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 10px; background: #ffffff; margin-top: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
@@ -110,6 +119,10 @@
     .matrix-table th.sticky-col { background: #f8fafc; z-index: 3; }
     .matrix-cell { width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: #f1f5f9; font-size: 0.65rem; }
     .matrix-cell.filled { color: #fff; font-weight: bold; }
+    .todo-rate-cell { font-weight: 800; font-size: 0.68rem; padding: 2px 4px; border-radius: 4px; }
+    .rate-high { background: #d1fae5; color: #065f46; }
+    .rate-mid  { background: #e0f2fe; color: #0369a1; }
+    .rate-low  { background: #f1f5f9; color: #64748b; }
 
     /* モーダル */
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 12px; backdrop-filter: blur(4px); }
@@ -155,6 +168,7 @@
   </nav>
 
   <div class="container" id="view-today">
+    <!-- 日付セレクター -->
     <div class="date-bar">
       <button class="date-nav-btn" onclick="changeDate(-1)">◀ Prev</button>
       <div style="text-align:center;">
@@ -164,6 +178,25 @@
       <button class="date-nav-btn" onclick="changeDate(1)">Next ▶</button>
     </div>
 
+    <!-- 独立TODOリストセクション -->
+    <div class="todo-panel">
+      <div class="todo-header">
+        <div class="todo-title">
+          <span>📋 DAILY TODO LIST</span>
+        </div>
+        <div class="todo-badge" id="todo-rate-badge">0% Completed</div>
+      </div>
+      <div class="todo-progress-bg">
+        <div class="todo-progress-fill" id="todo-progress-fill"></div>
+      </div>
+      <div class="todo-list" id="todo-list-container"></div>
+      <div class="todo-add-box">
+        <input type="text" class="todo-input" id="new-todo-input" placeholder="タスクを追加（Enterで登録）..." onkeypress="if(event.key==='Enter') addDailyTodo()">
+        <button class="todo-add-btn" onclick="addDailyTodo()">Add</button>
+      </div>
+    </div>
+
+    <!-- 習慣トラッカー -->
     <div class="section-title title-morning">☀️ MORNING</div>
     <div id="list-morning"></div>
 
@@ -175,8 +208,8 @@
   </div>
 
   <div class="container" id="view-stats" style="display: none;">
-    <div class="section-title" style="color: var(--text);">📊 HABIT HEATMAP (NEWEST FIRST)</div>
-    <p style="font-size:0.7rem; color:var(--text-sub); margin-bottom:8px;">Leftmost column is Today. Scroll right for past records.</p>
+    <div class="section-title" style="color: var(--text);">📊 HABIT & TODO HEATMAP (NEWEST FIRST)</div>
+    <p style="font-size:0.7rem; color:var(--text-sub); margin-bottom:8px;">Top row shows daily Todo completion rate. Leftmost is Today.</p>
     <div class="matrix-wrapper">
       <table class="matrix-table" id="matrix-table"></table>
     </div>
@@ -230,15 +263,13 @@
     const KEY_HABITS = 'HT_MASTER_HABITS';
     const KEY_LOGS   = 'HT_MASTER_LOGS';
     const KEY_MEMOS  = 'HT_MASTER_MEMOS';
-    const KEY_TODOS  = 'HT_MASTER_TODOS';
+    const KEY_DAILY_TODOS = 'HT_MASTER_DAILY_TODOS_V1';
 
+    // 厳選3色：緑・青・ピンク
     const COLORS = [
       { name: 'Emerald', code: '#10b981' },
       { name: 'Blue',    code: '#3b82f6' },
-      { name: 'Pink',    code: '#ec4899' },
-      { name: 'Amber',   code: '#f59e0b' },
-      { name: 'Purple',  code: '#8b5cf6' },
-      { name: 'Red',     code: '#ef4444' }
+      { name: 'Pink',    code: '#ec4899' }
     ];
 
     const DEFAULT_HABITS = [
@@ -265,8 +296,7 @@
     let habits = [];
     let logs = {};
     let memos = {};
-    let todos = {};
-    let subTabState = {};
+    let dailyTodos = {}; // { "YYYY-MM-DD": [ { id, text, done } ] }
     let editingTodoId = null;
     let selectedDate = new Date();
 
@@ -280,40 +310,19 @@
     function getRealTodayKey() { return formatDateKey(new Date()); }
     function getSelectedDateKey() { return formatDateKey(selectedDate); }
 
-    function migrateAndLoadData() {
+    function loadData() {
       try {
-        let savedHabits = localStorage.getItem(KEY_HABITS);
-        if (!savedHabits) {
-          savedHabits = localStorage.getItem('habit_tracker_master_v3') || 
-                        localStorage.getItem('habit_tracker_master_v2') || 
-                        localStorage.getItem('habits_v3') || 
-                        localStorage.getItem('habits_v2');
-        }
+        const savedHabits = localStorage.getItem(KEY_HABITS);
         habits = savedHabits ? JSON.parse(savedHabits) : DEFAULT_HABITS;
-
-        let savedLogs = localStorage.getItem(KEY_LOGS);
-        if (!savedLogs) {
-          savedLogs = localStorage.getItem('habit_tracker_logs_v3') || 
-                      localStorage.getItem('habit_tracker_logs_v2') || 
-                      localStorage.getItem('habit_logs_v3') || 
-                      localStorage.getItem('habit_logs_v2');
-        }
+        const savedLogs = localStorage.getItem(KEY_LOGS);
         logs = savedLogs ? JSON.parse(savedLogs) : {};
-
-        let savedMemos = localStorage.getItem(KEY_MEMOS);
-        if (!savedMemos) {
-          savedMemos = localStorage.getItem('habit_tracker_memos_v3') || 
-                       localStorage.getItem('habit_tracker_memos_v2');
-        }
+        const savedMemos = localStorage.getItem(KEY_MEMOS);
         memos = savedMemos ? JSON.parse(savedMemos) : {};
-
-        let savedTodos = localStorage.getItem(KEY_TODOS);
-        todos = savedTodos ? JSON.parse(savedTodos) : {};
-
-        saveData();
+        const savedTodos = localStorage.getItem(KEY_DAILY_TODOS);
+        dailyTodos = savedTodos ? JSON.parse(savedTodos) : {};
       } catch (e) {
         habits = DEFAULT_HABITS;
-        logs = {}; memos = {}; todos = {};
+        logs = {}; memos = {}; dailyTodos = {};
       }
     }
 
@@ -322,7 +331,7 @@
         localStorage.setItem(KEY_HABITS, JSON.stringify(habits));
         localStorage.setItem(KEY_LOGS, JSON.stringify(logs));
         localStorage.setItem(KEY_MEMOS, JSON.stringify(memos));
-        localStorage.setItem(KEY_TODOS, JSON.stringify(todos));
+        localStorage.setItem(KEY_DAILY_TODOS, JSON.stringify(dailyTodos));
       } catch (e) {
         console.error("Save failed:", e);
       }
@@ -348,6 +357,114 @@
       renderHeatmap();
     }
 
+    /* 独立TODO機能 */
+    function renderDailyTodos() {
+      const dateKey = getSelectedDateKey();
+      const list = dailyTodos[dateKey] || [];
+      const container = document.getElementById('todo-list-container');
+      container.innerHTML = '';
+
+      const total = list.length;
+      const doneCount = list.filter(t => t.done).length;
+      const rate = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+
+      document.getElementById('todo-rate-badge').innerText = total === 0 ? 'No tasks' : `${rate}% (${doneCount}/${total})`;
+      document.getElementById('todo-progress-fill').style.width = `${rate}%`;
+
+      if (list.length === 0) {
+        container.innerHTML = `<div style="font-size:0.75rem; color:var(--text-sub); padding:4px 0;">今日のタスクはありません。</div>`;
+        return;
+      }
+
+      list.forEach(t => {
+        const isEditing = editingTodoId === t.id;
+        const div = document.createElement('div');
+        div.className = `todo-item ${t.done ? 'done' : ''}`;
+
+        if (isEditing) {
+          div.innerHTML = `
+            <input type="text" class="todo-edit-input" id="edit-todo-input-${t.id}" value="${t.text}" onkeypress="if(event.key==='Enter') saveTodoEdit('${t.id}')">
+            <button class="todo-btn-icon" onclick="saveTodoEdit('${t.id}')" title="Save">✓</button>
+            <button class="todo-btn-icon" onclick="cancelTodoEdit()" title="Cancel">✕</button>
+          `;
+        } else {
+          div.innerHTML = `
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleDailyTodo('${t.id}')">
+            <span class="todo-text" onclick="startEditTodo('${t.id}')" title="Click to edit">${t.text}</span>
+            <button class="todo-btn-icon" onclick="startEditTodo('${t.id}')" title="Edit">✏️</button>
+            <button class="todo-btn-icon todo-del" onclick="deleteDailyTodo('${t.id}')" title="Delete">✕</button>
+          `;
+        }
+        container.appendChild(div);
+      });
+    }
+
+    function addDailyTodo() {
+      const input = document.getElementById('new-todo-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const dateKey = getSelectedDateKey();
+      if (!dailyTodos[dateKey]) dailyTodos[dateKey] = [];
+      dailyTodos[dateKey].push({ id: 'todo_' + Date.now(), text, done: false });
+      
+      input.value = '';
+      saveData();
+      renderDailyTodos();
+      renderHeatmap();
+    }
+
+    function toggleDailyTodo(id) {
+      const dateKey = getSelectedDateKey();
+      const list = dailyTodos[dateKey] || [];
+      const item = list.find(t => t.id === id);
+      if (item) {
+        item.done = !item.done;
+        saveData();
+        renderDailyTodos();
+        renderHeatmap();
+      }
+    }
+
+    function deleteDailyTodo(id) {
+      const dateKey = getSelectedDateKey();
+      if (dailyTodos[dateKey]) {
+        dailyTodos[dateKey] = dailyTodos[dateKey].filter(t => t.id !== id);
+        saveData();
+        renderDailyTodos();
+        renderHeatmap();
+      }
+    }
+
+    function startEditTodo(id) {
+      editingTodoId = id;
+      renderDailyTodos();
+      setTimeout(() => {
+        const el = document.getElementById(`edit-todo-input-${id}`);
+        if (el) { el.focus(); el.select(); }
+      }, 50);
+    }
+
+    function saveTodoEdit(id) {
+      const el = document.getElementById(`edit-todo-input-${id}`);
+      if (!el) return;
+      const text = el.value.trim();
+      const dateKey = getSelectedDateKey();
+      const item = (dailyTodos[dateKey] || []).find(t => t.id === id);
+      if (item && text) {
+        item.text = text;
+        saveData();
+      }
+      editingTodoId = null;
+      renderDailyTodos();
+    }
+
+    function cancelTodoEdit() {
+      editingTodoId = null;
+      renderDailyTodos();
+    }
+
+    /* 習慣チェック機能（3色パレット） */
     function setHabitColor(habitId, color) {
       const dateKey = getSelectedDateKey();
       if (!logs[dateKey]) logs[dateKey] = {};
@@ -371,14 +488,9 @@
       if (picker) picker.classList.toggle('show');
     }
 
-    function toggleSubPanel(habitId) {
+    function toggleMemo(habitId) {
       const el = document.getElementById(`sub-panel-${habitId}`);
       if (el) el.classList.toggle('show');
-    }
-
-    function switchSubTab(habitId, mode) {
-      subTabState[habitId] = mode;
-      renderToday();
     }
 
     function updateMemo(habitId, val) {
@@ -388,75 +500,13 @@
       saveData();
     }
 
-    function addTodo(habitId) {
-      const input = document.getElementById(`todo-input-${habitId}`);
-      const text = input.value.trim();
-      if (!text) return;
-      const dateKey = getSelectedDateKey();
-      if (!todos[dateKey]) todos[dateKey] = {};
-      if (!todos[dateKey][habitId]) todos[dateKey][habitId] = [];
-
-      todos[dateKey][habitId].push({ id: 't_' + Date.now(), text, done: false });
-      input.value = '';
-      saveData();
-      renderToday();
-    }
-
-    function toggleTodo(habitId, todoId) {
-      const dateKey = getSelectedDateKey();
-      const list = todos[dateKey]?.[habitId] || [];
-      const item = list.find(t => t.id === todoId);
-      if (item) {
-        item.done = !item.done;
-        saveData();
-        renderToday();
-      }
-    }
-
-    function deleteTodo(habitId, todoId) {
-      const dateKey = getSelectedDateKey();
-      if (todos[dateKey]?.[habitId]) {
-        todos[dateKey][habitId] = todos[dateKey][habitId].filter(t => t.id !== todoId);
-        saveData();
-        renderToday();
-      }
-    }
-
-    function startEditTodo(todoId) {
-      editingTodoId = todoId;
-      renderToday();
-      setTimeout(() => {
-        const input = document.getElementById(`edit-todo-input-${todoId}`);
-        if (input) { input.focus(); input.select(); }
-      }, 50);
-    }
-
-    function saveTodoEdit(habitId, todoId) {
-      const input = document.getElementById(`edit-todo-input-${todoId}`);
-      if (!input) return;
-      const newText = input.value.trim();
-      const dateKey = getSelectedDateKey();
-      const list = todos[dateKey]?.[habitId] || [];
-      const item = list.find(t => t.id === todoId);
-      if (item && newText) {
-        item.text = newText;
-        saveData();
-      }
-      editingTodoId = null;
-      renderToday();
-    }
-
-    function cancelTodoEdit() {
-      editingTodoId = null;
-      renderToday();
-    }
-
     function renderToday() {
       updateDateLabel();
+      renderDailyTodos();
+
       const dateKey = getSelectedDateKey();
       const dayLogs = logs[dateKey] || {};
       const dayMemos = memos[dateKey] || {};
-      const dayTodos = todos[dateKey] || {};
 
       ['morning', 'afternoon', 'night'].forEach(time => {
         const container = document.getElementById(`list-${time}`);
@@ -472,9 +522,6 @@
           const activeColor = dayLogs[h.id] || null;
           const isDone = !!activeColor;
           const memoText = dayMemos[h.id] || '';
-          const todoList = dayTodos[h.id] || [];
-          const currentSubTab = subTabState[h.id] || 'note';
-          const hasSubContent = memoText.trim() !== '' || todoList.length > 0;
 
           const wrapper = document.createElement('div');
           wrapper.className = `habit-container ${h.time}`;
@@ -483,38 +530,17 @@
             `<button class="color-dot" style="background:${c.code}" onclick="setHabitColor('${h.id}', '${c.code}')"></button>`
           ).join('');
 
-          let todoItemsHtml = todoList.map(t => {
-            if (editingTodoId === t.id) {
-              return `
-                <div class="todo-item">
-                  <input type="text" class="todo-edit-input" id="edit-todo-input-${t.id}" value="${t.text}" onkeypress="if(event.key==='Enter') saveTodoEdit('${h.id}', '${t.id}')">
-                  <button class="todo-btn-icon" onclick="saveTodoEdit('${h.id}', '${t.id}')" title="Save">✓</button>
-                  <button class="todo-btn-icon" onclick="cancelTodoEdit()" title="Cancel">✕</button>
-                </div>
-              `;
-            } else {
-              return `
-                <div class="todo-item ${t.done ? 'done' : ''}">
-                  <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTodo('${h.id}', '${t.id}')">
-                  <span class="todo-text" onclick="startEditTodo('${t.id}')" title="Click to edit">${t.text}</span>
-                  <button class="todo-btn-icon" onclick="startEditTodo('${t.id}')" title="Edit">✏️</button>
-                  <button class="todo-btn-icon todo-del" onclick="deleteTodo('${h.id}', '${t.id}')" title="Delete">✕</button>
-                </div>
-              `;
-            }
-          }).join('');
-
           wrapper.innerHTML = `
             <div class="habit-card">
-              <div class="habit-info" onclick="toggleSubPanel('${h.id}')">
+              <div class="habit-info" onclick="toggleMemo('${h.id}')">
                 <div class="habit-name">
                   ${h.name}
-                  <span style="font-size:0.7rem; opacity:0.6;">${hasSubContent ? '📝' : '▾'}</span>
+                  <span style="font-size:0.7rem; opacity:0.6;">${memoText.trim() ? '📝' : '▾'}</span>
                 </div>
                 <div class="habit-desc">${h.desc}</div>
               </div>
               <div class="action-group">
-                <button class="memo-toggle-btn ${hasSubContent ? 'has-content' : ''}" onclick="toggleSubPanel('${h.id}')" title="Note/Todo">
+                <button class="memo-toggle-btn ${memoText.trim() ? 'has-content' : ''}" onclick="toggleMemo('${h.id}')" title="Note">
                   ✏️
                 </button>
                 <div class="color-picker" id="picker-${h.id}">
@@ -529,23 +555,9 @@
               </div>
             </div>
             
-            <div class="sub-panel ${hasSubContent ? 'show' : ''}" id="sub-panel-${h.id}">
-              <div class="sub-tabs">
-                <button class="sub-tab-btn ${currentSubTab === 'note' ? 'active' : ''}" onclick="switchSubTab('${h.id}', 'note')">NOTE</button>
-                <button class="sub-tab-btn ${currentSubTab === 'todo' ? 'active' : ''}" onclick="switchSubTab('${h.id}', 'todo')">TODO LIST (${todoList.length})</button>
-              </div>
-
-              <div id="sub-content-note-${h.id}" style="${currentSubTab === 'note' ? 'display:block;' : 'display:none;'}">
-                <textarea class="memo-input" rows="2" placeholder="今日のメモ・目標を入力..." oninput="updateMemo('${h.id}', this.value)">${memoText}</textarea>
-              </div>
-
-              <div id="sub-content-todo-${h.id}" style="${currentSubTab === 'todo' ? 'display:block;' : 'display:none;'}">
-                <div class="todo-list">${todoItemsHtml}</div>
-                <div class="todo-add-box">
-                  <input type="text" class="todo-input" id="todo-input-${h.id}" placeholder="新しいタスクを追加..." onkeypress="if(event.key==='Enter') addTodo('${h.id}')">
-                  <button class="todo-add-btn" onclick="addTodo('${h.id}')">Add</button>
-                </div>
-              </div>
+            <div class="sub-panel ${memoText.trim() ? 'show' : ''}" id="sub-panel-${h.id}">
+              <span class="memo-tag">DAILY NOTE / GOAL</span>
+              <textarea class="memo-input" rows="2" placeholder="今日の具体的なメモや意識することを入力..." oninput="updateMemo('${h.id}', this.value)">${memoText}</textarea>
             </div>
           `;
           container.appendChild(wrapper);
@@ -553,6 +565,7 @@
       });
     }
 
+    /* ヒートマップ：TODO達成率を最上行に表示 */
     function renderHeatmap() {
       const table = document.getElementById('matrix-table');
       table.innerHTML = '';
@@ -572,13 +585,33 @@
         });
       }
 
-      let thead = '<thead><tr><th class="sticky-col">Habit</th>';
+      // ヘッダー生成
+      let thead = '<thead><tr><th class="sticky-col">Category / Date</th>';
       days.forEach(day => {
         thead += `<th class="${day.isToday ? 'today-col' : ''}">${day.label}</th>`;
       });
       thead += '</tr></thead>';
 
       let tbody = '<tbody>';
+
+      // 1行目：TODO達成率
+      tbody += `<tr><td class="sticky-col" style="color:#0284c7; font-weight:800;">📋 TODO RATE</td>`;
+      days.forEach(day => {
+        const tList = dailyTodos[day.key] || [];
+        if (tList.length === 0) {
+          tbody += `<td><span style="color:var(--text-sub); font-size:0.65rem;">-</span></td>`;
+        } else {
+          const done = tList.filter(t => t.done).length;
+          const pct = Math.round((done / tList.length) * 100);
+          let rateClass = 'rate-low';
+          if (pct >= 80) rateClass = 'rate-high';
+          else if (pct >= 40) rateClass = 'rate-mid';
+          tbody += `<td><span class="todo-rate-cell ${rateClass}">${pct}%</span></td>`;
+        }
+      });
+      tbody += '</tr>';
+
+      // 2行目以降：習慣一覧
       const orderedActiveHabits = [];
       ['morning', 'afternoon', 'night'].forEach(t => {
         habits.filter(h => h.time === t && h.active).forEach(h => orderedActiveHabits.push(h));
@@ -745,7 +778,7 @@
     }
 
     function exportData() {
-      const backup = { habits, logs, memos, todos, exportedAt: new Date().toISOString() };
+      const backup = { habits, logs, memos, dailyTodos, exportedAt: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -764,7 +797,7 @@
             habits = imported.habits;
             logs = imported.logs;
             memos = imported.memos || {};
-            todos = imported.todos || {};
+            dailyTodos = imported.dailyTodos || {};
             saveData();
             renderManageModal();
             renderToday();
@@ -803,7 +836,7 @@
       }
     });
 
-    migrateAndLoadData();
+    loadData();
     renderToday();
     renderHeatmap();
   </script>
